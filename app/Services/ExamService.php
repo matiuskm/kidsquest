@@ -12,8 +12,6 @@ use Throwable;
 
 final class ExamService
 {
-    private const DOUBLE_TAP_SECONDS = 10;
-
     public function __construct(private PhotoStore $photos, private Notifier $notifier) {}
 
     /** @throws AlreadySubmitted|\App\Exceptions\InvalidImage */
@@ -22,11 +20,9 @@ final class ExamService
         return DB::transaction(function () use ($child, $subject, $score, $photo) {
             User::whereKey($child->id)->lockForUpdate()->first(); // serialisasi dobel-tap
 
-            $duplicate = ExamResult::where(['child_id' => $child->id, 'subject' => $subject, 'claimed_score' => $score])
-                ->where('created_at', '>=', now()->subSeconds(self::DOUBLE_TAP_SECONDS))->exists();
-
-            if ($duplicate) {
-                throw new AlreadySubmitted('Nilai ini baru saja dikirim.');
+            // Satu ulangan per mata pelajaran menunggu keputusan; sekaligus menahan dobel-tap dan kiriman berulang.
+            if (ExamResult::where(['child_id' => $child->id, 'subject' => $subject, 'status' => ReviewStatus::Pending])->exists()) {
+                throw new AlreadySubmitted("Nilai $subject masih menunggu ortu.");
             }
 
             $path = $this->photos->store($photo);

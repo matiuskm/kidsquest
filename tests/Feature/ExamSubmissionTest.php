@@ -70,6 +70,19 @@ class ExamSubmissionTest extends TestCase
         $this->assertSame(1, ExamResult::count());
     }
 
+    public function test_pending_exam_blocks_resubmission_until_decided(): void
+    {
+        $this->send();
+        $this->travel(1)->minute();
+        $this->send()->assertSessionHasErrors('photo');
+        $this->send(['subject' => 'IPA'])->assertSessionDoesntHaveErrors();
+        $this->assertSame(2, ExamResult::count());
+
+        ExamResult::where('subject', 'Matematika')->update(['status' => ReviewStatus::Rejected]);
+        $this->send()->assertSessionDoesntHaveErrors();
+        $this->assertSame(3, ExamResult::count());
+    }
+
     public function test_exam_photo_is_visible_to_owner_and_parent_only(): void
     {
         $this->send();
