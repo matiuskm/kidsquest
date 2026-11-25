@@ -3,6 +3,8 @@
 Format mengikuti [Keep a Changelog](https://keepachangelog.com/), versi mengikuti [SemVer](https://semver.org/).
 
 ## [Unreleased]
+
+## [1.2.0] - 2026-11-25
 ### Added
 - Chat 1-lawan-1 antar anak dan anak-parent (teks maks 500 karakter, notifikasi push, penanda belum dibaca, polling 5 detik). Parent hanya melihat chat miliknya sendiri; chat antar anak privat. Parent bisa mematikan chat antar anak per anak. Foto di chat belum ada.
 - Parent bisa membatalkan persetujuan tugas atau nilai ulangan dari Riwayat: poin ditarik lagi (ditolak bila poin sudah terpakai) dan item kembali ke antrean periksa.
