@@ -138,7 +138,27 @@ class AuthTest extends TestCase
         User::factory()->parent()->create(['name' => 'Ortu']);
         User::factory()->child()->create(['name' => 'Hapus'])->delete();
 
-        $this->get('/')->assertOk()->assertSee('Budi')->assertDontSee('Ortu')->assertDontSee('Hapus');
+        $this->get(route('child.pick'))->assertOk()->assertSee('Budi')->assertDontSee('Ortu')->assertDontSee('Hapus');
+    }
+
+    public function test_landing_page_shows_no_child_names_and_links_to_both_logins(): void
+    {
+        User::factory()->child()->create(['name' => 'Budi']);
+
+        $this->get('/')->assertOk()->assertSee('KidsQuest')->assertDontSee('Budi')
+            ->assertSee(route('child.pick'), false)->assertSee(route('login'), false);
+    }
+
+    public function test_child_picker_lives_on_its_own_page_and_links_back_home(): void
+    {
+        $this->assertNotSame(url('/'), route('child.pick'));
+        $this->get(route('child.pick'))->assertOk()->assertSee('href="'.url('/').'"', false);
+    }
+
+    public function test_logged_in_users_skip_the_picker(): void
+    {
+        $this->actingAs(User::factory()->child()->create())->get(route('child.pick'))->assertRedirect(route('child.missions'));
+        $this->actingAs(User::factory()->parent()->create())->get(route('child.pick'))->assertRedirect(route('parent.dashboard'));
     }
 
     public function test_soft_deleted_child_cannot_login(): void

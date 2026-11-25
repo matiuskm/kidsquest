@@ -16,6 +16,6 @@
         <input id="password" name="password" type="password" class="w-full rounded border p-2" required>
     </div>
     <button class="w-full rounded bg-indigo-600 p-2 text-white">Masuk</button>
-    <p class="text-center text-sm"><a href="{{ route('child.pick') }}" class="underline">Kembali ke layar anak</a></p>
+    <p class="text-center text-sm"><a href="{{ route('home') }}" class="underline">← Beranda</a></p>
 </form>
 @endsection

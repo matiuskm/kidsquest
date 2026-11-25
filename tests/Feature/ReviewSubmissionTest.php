@@ -125,6 +125,12 @@ class ReviewSubmissionTest extends TestCase
             ->assertSee('Perlu diperiksa')->assertSee('Budi')->assertSee('Cuci piring')->assertSee('40');
     }
 
+    public function test_dashboard_greets_the_parent_and_summarizes_the_day(): void
+    {
+        $this->actingAs($this->parent)->get(route('parent.dashboard'))->assertOk()
+            ->assertSee('Halo, '.$this->parent->name)->assertSee('Perlu diperiksa')->assertSee('Misi selesai hari ini');
+    }
+
     public function test_history_shows_decisions_and_point_movements(): void
     {
         $this->actingAs($this->parent)->post(route('parent.submissions.approve', $this->submission));

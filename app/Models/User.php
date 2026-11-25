@@ -63,6 +63,12 @@ class User extends Authenticatable
         return app(\App\Services\PointsLedger::class)->balance($this);
     }
 
+    /** Halaman utama sesuai peran. */
+    public function homeRoute(): string
+    {
+        return $this->isParent() ? 'parent.dashboard' : 'child.missions';
+    }
+
     public function scopeChildren(Builder $query): void
     {
         $query->where('role', Role::Child);
