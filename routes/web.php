@@ -5,7 +5,11 @@ use App\Http\Controllers\Child;
 use App\Http\Controllers\ChildLoginController;
 use App\Http\Controllers\Parents;
 use App\Http\Controllers\PhotoController;
+use App\Http\Middleware\AwardBirthdayBonus;
+use App\Models\User;
 use Illuminate\Support\Facades\Route;
+
+Route::bind('child', fn ($id) => User::children()->findOrFail($id));
 
 Route::get('/', [ChildLoginController::class, 'pick'])->name('child.pick');
 Route::post('/masuk-anak', [ChildLoginController::class, 'store'])->name('child.pin');
@@ -22,14 +26,18 @@ Route::middleware('role:parent')->prefix('orangtua')->group(function () {
     Route::post('periksa/klaim/{redemption}/setuju', [Parents\ReviewController::class, 'approveRedemption'])->name('parent.redemptions.approve');
     Route::post('periksa/klaim/{redemption}/tolak', [Parents\ReviewController::class, 'rejectRedemption'])->name('parent.redemptions.reject');
     Route::post('poin/{child}/sesuaikan', [Parents\PointsController::class, 'adjust'])->name('parent.points.adjust');
+    Route::resource('anak', Parents\ChildController::class)->except('show')
+        ->parameters(['anak' => 'child'])->names('parent.children');
     Route::resource('hadiah', Parents\RewardController::class)->except('show')
         ->parameters(['hadiah' => 'reward'])->names('parent.rewards');
     Route::resource('tugas', Parents\TaskController::class)->except('show')
         ->parameters(['tugas' => 'task'])->names('parent.tasks');
 });
 
-Route::middleware('role:child')->group(function () {
+Route::middleware(['role:child', AwardBirthdayBonus::class])->group(function () {
     Route::get('/misi', [Child\MissionController::class, 'index'])->name('child.missions');
+    Route::get('/saya', [Child\ProfileController::class, 'edit'])->name('child.profile');
+    Route::put('/saya', [Child\ProfileController::class, 'update'])->name('child.profile.update');
     Route::get('/hadiah', [Child\RewardController::class, 'index'])->name('child.rewards');
     Route::post('/hadiah/{reward}', [Child\RewardController::class, 'claim'])->name('child.claim');
     Route::post('/misi/{task}', [Child\MissionController::class, 'store'])->name('child.submit');

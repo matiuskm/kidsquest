@@ -12,8 +12,6 @@ class PointsController extends Controller
 {
     public function adjust(Request $request, User $child, PointsLedger $ledger)
     {
-        abort_unless($child->isChild(), 404);
-
         $data = $request->validate([
             'amount' => ['required', 'integer', 'not_in:0', 'between:-100000,100000'],
             'note' => ['required', 'string', 'max:100'],
