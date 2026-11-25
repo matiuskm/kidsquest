@@ -10,8 +10,10 @@ use App\Models\ExamResult;
 use App\Models\Redemption;
 use App\Models\Submission;
 use App\Services\ReviewService;
+use App\Support\ExamGrade;
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class ReviewController extends Controller
 {
@@ -27,7 +29,7 @@ class ReviewController extends Controller
 
     public function approveExam(Request $request, ExamResult $exam, ReviewService $reviews)
     {
-        $data = $request->validate(['score' => ['nullable', 'integer', 'between:0,100'], 'letter' => ['nullable', 'in:A,B,C,D,E']]);
+        $data = $request->validate(['score' => ['nullable', 'integer', 'between:0,100'], 'letter' => ['nullable', Rule::in(ExamGrade::LETTERS)]]);
 
         return $this->decide(fn () => $reviews->approveExam($exam, isset($data['score']) ? (int) $data['score'] : null, $data['letter'] ?? null), 'Nilai disetujui ✅');
     }
