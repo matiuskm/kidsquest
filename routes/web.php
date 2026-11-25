@@ -26,6 +26,8 @@ Route::middleware('role:parent')->prefix('orangtua')->group(function () {
     Route::get('riwayat', Parents\HistoryController::class)->name('parent.history');
     Route::post('periksa/submission/{submission}/setuju', [Parents\ReviewController::class, 'approveSubmission'])->name('parent.submissions.approve');
     Route::post('periksa/submission/{submission}/tolak', [Parents\ReviewController::class, 'rejectSubmission'])->name('parent.submissions.reject');
+    Route::post('periksa/nilai/{exam}/setuju', [Parents\ReviewController::class, 'approveExam'])->name('parent.exams.approve');
+    Route::post('periksa/nilai/{exam}/tolak', [Parents\ReviewController::class, 'rejectExam'])->name('parent.exams.reject');
     Route::post('periksa/klaim/{redemption}/setuju', [Parents\ReviewController::class, 'approveRedemption'])->name('parent.redemptions.approve');
     Route::post('periksa/klaim/{redemption}/tolak', [Parents\ReviewController::class, 'rejectRedemption'])->name('parent.redemptions.reject');
     Route::post('poin/{child}/sesuaikan', [Parents\PointsController::class, 'adjust'])->name('parent.points.adjust');
@@ -43,6 +45,8 @@ Route::middleware(['role:child', AwardBirthdayBonus::class])->group(function () 
     Route::put('/saya', [Child\ProfileController::class, 'update'])->name('child.profile.update');
     Route::get('/hadiah', [Child\RewardController::class, 'index'])->name('child.rewards');
     Route::post('/hadiah/{reward}', [Child\RewardController::class, 'claim'])->name('child.claim');
+    Route::get('/nilai', [Child\ExamController::class, 'index'])->name('child.exams');
+    Route::post('/nilai', [Child\ExamController::class, 'store'])->name('child.exams.store');
     Route::post('/misi/{task}', [Child\MissionController::class, 'store'])->name('child.submit');
 });
 
@@ -52,3 +56,4 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::get('/foto/{submission}', PhotoController::class)->middleware('auth')->name('photos.show');
+Route::get('/foto-ulangan/{exam}', [PhotoController::class, 'exam'])->middleware('auth')->name('photos.exam');

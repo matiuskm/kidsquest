@@ -23,6 +23,11 @@ final class PointsLedger
         return $this->write($child, $this->positive($points), LedgerType::Earn, $ref);
     }
 
+    public function exam(User $child, int $points, Model $ref): PointTransaction
+    {
+        return $this->write($child, $this->positive($points), LedgerType::Exam, $ref);
+    }
+
     /** @throws InsufficientPoints */
     public function redeem(User $child, int $cost, Model $ref): PointTransaction
     {
