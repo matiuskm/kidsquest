@@ -1,9 +1,9 @@
 @extends($layout)
 
-@section('title', 'Chat')
+@section('title', __('Chat'))
 
 @section('content')
-    <h1 class="mb-4 text-2xl font-extrabold">Chat 💬</h1>
+    <h1 class="mb-4 text-2xl font-extrabold">{{ __('Chat 💬') }}</h1>
 
     <ul class="divide-y rounded-2xl bg-white shadow">
         @forelse ($contacts as $c)
@@ -16,7 +16,7 @@
                 </a>
             </li>
         @empty
-            <li class="p-4 text-slate-500">Belum ada teman chat.</li>
+            <li class="p-4 text-slate-500">{{ __('Belum ada teman chat.') }}</li>
         @endforelse
     </ul>
 @endsection

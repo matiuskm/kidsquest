@@ -14,14 +14,14 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use NotificationChannels\WebPush\HasPushSubscriptions;
 
-#[Fillable(['name', 'email', 'password', 'role', 'avatar', 'pin_hash', 'birthday_month', 'birthday_day', 'peer_chat'])]
+#[Fillable(['name', 'email', 'password', 'role', 'avatar', 'pin_hash', 'birthday_month', 'birthday_day', 'peer_chat', 'locale'])]
 #[Hidden(['password', 'remember_token', 'pin_hash'])]
 class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */
     use HasFactory, HasPushSubscriptions, Notifiable, SoftDeletes;
 
-    protected $attributes = ['peer_chat' => true];
+    protected $attributes = ['peer_chat' => true, 'locale' => 'id'];
 
     protected static function booted(): void
     {

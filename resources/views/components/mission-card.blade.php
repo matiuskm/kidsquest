@@ -10,10 +10,10 @@
         MissionStatus::Done => 'bg-emerald-100',
     };
     $badge = match ($m->status) {
-        MissionStatus::Todo => '🎯 Ayo kerjakan!',
-        MissionStatus::Pending => '⏳ Menunggu ortu',
-        MissionStatus::Rejected => '🔁 Coba lagi',
-        MissionStatus::Done => '✅ Selesai!',
+        MissionStatus::Todo => __('🎯 Ayo kerjakan!'),
+        MissionStatus::Pending => __('⏳ Menunggu ortu'),
+        MissionStatus::Rejected => __('🔁 Coba lagi'),
+        MissionStatus::Done => __('✅ Selesai!'),
     };
 @endphp
 
@@ -28,7 +28,7 @@
     <p class="mt-2 text-base">{{ $badge }}</p>
 
     @if ($m->status === MissionStatus::Rejected && $m->submission?->reject_note)
-        <p class="mt-1 text-base text-rose-700">Kata ortu: {{ $m->submission->reject_note }}</p>
+        <p class="mt-1 text-base text-rose-700">{{ __('Kata ortu:') }} {{ $m->submission->reject_note }}</p>
     @endif
 
     @if (in_array($m->status, [MissionStatus::Todo, MissionStatus::Rejected], true))
@@ -36,12 +36,12 @@
             x-data="photoUpload" @submit="busy = true" class="mt-3 space-y-3">
             @csrf
             <label class="block cursor-pointer rounded-2xl border-4 border-dashed border-sky-300 p-4 text-center">
-                <span x-show="!preview">📷 Ambil foto bukti</span>
+                <span x-show="!preview">{{ __('📷 Ambil foto bukti') }}</span>
                 <img x-show="preview" :src="preview" class="mx-auto max-h-48 rounded-xl" alt="">
                 <input type="file" name="photo" accept="image/*" capture="environment" class="sr-only" required @change="shrink($event)">
             </label>
             <p x-show="error" x-text="error" x-cloak class="text-center text-base text-rose-700"></p>
-            <button :disabled="busy || working || error" class="w-full rounded-2xl bg-pink-400 py-3 text-white disabled:opacity-50">Kirim 🚀</button>
+            <button :disabled="busy || working || error" class="w-full rounded-2xl bg-pink-400 py-3 text-white disabled:opacity-50">{{ __('Kirim 🚀') }}</button>
         </form>
     @endif
 </article>

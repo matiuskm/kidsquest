@@ -1,0 +1,46 @@
+<?php
+
+return [
+    'array' => ':attribute harus berupa daftar.',
+    'after_or_equal' => ':attribute harus sama dengan atau setelah :date.',
+    'between' => [
+        'array' => ':attribute harus berisi :min sampai :max item.',
+        'file' => ':attribute harus berukuran :min sampai :max kilobyte.',
+        'numeric' => ':attribute harus antara :min sampai :max.',
+        'string' => ':attribute harus :min sampai :max karakter.',
+    ],
+    'boolean' => ':attribute harus ya atau tidak.',
+    'date' => ':attribute bukan tanggal yang valid.',
+    'digits' => ':attribute harus :digits angka.',
+    'email' => ':attribute harus berupa email yang valid.',
+    'file' => ':attribute harus berupa berkas.',
+    'image' => ':attribute harus berupa gambar.',
+    'in' => ':attribute yang dipilih tidak valid.',
+    'integer' => ':attribute harus berupa angka bulat.',
+    'max' => [
+        'array' => ':attribute tidak boleh lebih dari :max item.',
+        'file' => ':attribute tidak boleh lebih dari :max kilobyte.',
+        'numeric' => ':attribute tidak boleh lebih dari :max.',
+        'string' => ':attribute tidak boleh lebih dari :max karakter.',
+    ],
+    'min' => [
+        'array' => ':attribute minimal :min item.',
+        'file' => ':attribute minimal :min kilobyte.',
+        'numeric' => ':attribute minimal :min.',
+        'string' => ':attribute minimal :min karakter.',
+    ],
+    'not_in' => ':attribute yang dipilih tidak valid.',
+    'prohibits' => ':attribute tidak boleh diisi bersama :other.',
+    'required' => ':attribute wajib diisi.',
+    'required_if' => ':attribute wajib diisi bila :other adalah :value.',
+    'string' => ':attribute harus berupa teks.',
+    'uploaded' => ':attribute gagal diunggah.',
+    'custom' => [],
+    'attributes' => [
+        'name' => 'nama', 'title' => 'judul', 'points' => 'poin', 'cost' => 'harga', 'pin' => 'PIN',
+        'description' => 'keterangan', 'recurrence' => 'pengulangan', 'weekdays' => 'hari', 'month_day' => 'tanggal',
+        'start_date' => 'tanggal mulai', 'end_date' => 'tanggal selesai', 'children' => 'anak', 'photo' => 'foto',
+        'body' => 'pesan', 'note' => 'catatan', 'amount' => 'jumlah', 'score' => 'nilai', 'letter' => 'huruf',
+        'subject' => 'mata pelajaran', 'password' => 'password',
+    ],
+];

@@ -1,9 +1,9 @@
 @extends('layouts.child')
 
-@section('title', 'Misi')
+@section('title', __('Misi'))
 
 @section('content')
-    <h1 class="mb-4 text-4xl font-extrabold">Misi hari ini {{ auth()->user()->avatar }}</h1>
+    <h1 class="mb-4 text-4xl font-extrabold">{{ __('Misi hari ini') }} {{ auth()->user()->avatar }}</h1>
 
     @if (session('status'))
         <div class="mb-4 rounded-2xl bg-emerald-200 p-4">{{ session('status') }}</div>
@@ -18,7 +18,7 @@
         @forelse ($missions as $mission)
             <x-mission-card :mission="$mission" />
         @empty
-            <p class="rounded-3xl bg-white p-6 text-center">Tidak ada misi hari ini. Santai dulu ya 😎</p>
+            <p class="rounded-3xl bg-white p-6 text-center">{{ __('Tidak ada misi hari ini. Santai dulu ya 😎') }}</p>
         @endforelse
     </div>
 @endsection

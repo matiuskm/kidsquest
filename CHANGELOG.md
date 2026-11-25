@@ -4,6 +4,13 @@ Format mengikuti [Keep a Changelog](https://keepachangelog.com/), versi mengikut
 
 ## [Unreleased]
 
+## [1.3.0] - 2026-11-26
+### Added
+- Pilihan bahasa Indonesia/English per pengguna (tombol 🌐 di header parent dan halaman Saya anak). Tampilan, pesan error/validasi, dan notifikasi push mengikuti bahasa penerima. Teks Inggris di `lang/en.json`; string baru harus dibungkus `__()` dan ditambah ke sana.
+- Parent bisa memberi poin gratis tanpa alasan dari daftar Anak (catatan opsional, anak dapat notifikasi).
+### Fixed
+- Pesan validasi kini berbahasa Indonesia yang terbaca (`lang/id/validation.php`), bukan kunci mentah.
+
 ## [1.2.0] - 2026-11-25
 ### Added
 - Chat 1-lawan-1 antar anak dan anak-parent (teks maks 500 karakter, notifikasi push, penanda belum dibaca, polling 5 detik). Parent hanya melihat chat miliknya sendiri; chat antar anak privat. Parent bisa mematikan chat antar anak per anak. Foto di chat belum ada.

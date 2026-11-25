@@ -25,6 +25,6 @@ class MissionController extends Controller
             return back()->withErrors(['photo' => $e->getMessage()])->with('sound', 'reject');
         }
 
-        return redirect()->route('child.missions')->with('status', 'Foto terkirim! Tunggu ortu periksa ya ✨')->with('sound', 'submit');
+        return redirect()->route('child.missions')->with('status', __('Foto terkirim! Tunggu ortu periksa ya ✨'))->with('sound', 'submit');
     }
 }

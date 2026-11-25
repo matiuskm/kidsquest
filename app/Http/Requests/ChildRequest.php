@@ -21,7 +21,7 @@ class ChildRequest extends FormRequest
                 'birthday_day' => ['required', 'integer', 'between:1,31', function ($attr, $value, $fail) {
                     // 2024 kabisat: 29 Feb sah.
                     if (! checkdate((int) $this->input('birthday_month'), (int) $value, 2024)) {
-                        $fail('Tanggal lahir tidak valid.');
+                        $fail(__('Tanggal lahir tidak valid.'));
                     }
                 }],
             ] : []),

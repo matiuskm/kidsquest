@@ -206,17 +206,17 @@ class RewardTest extends TestCase
         $this->assertSame(20, $this->balance());
     }
 
-    public function test_adjust_cannot_go_below_zero_or_skip_note_or_be_zero(): void
+    public function test_adjust_cannot_go_below_zero_or_be_zero_and_note_is_optional(): void
     {
         $this->fund(10);
         $this->actingAs($this->parent);
 
         $this->post(route('parent.points.adjust', $this->child), ['amount' => -11, 'note' => 'x'])->assertSessionHasErrors('review');
-        $this->post(route('parent.points.adjust', $this->child), ['amount' => 5])->assertSessionHasErrors('note');
+        $this->post(route('parent.points.adjust', $this->child), ['amount' => 5])->assertSessionHasNoErrors();
         $this->post(route('parent.points.adjust', $this->child), ['amount' => 0, 'note' => 'x'])->assertSessionHasErrors('amount');
-        $this->assertSame(10, $this->balance());
+        $this->assertSame(15, $this->balance());
 
         $this->actingAs($this->child)->post(route('parent.points.adjust', $this->child), ['amount' => 50, 'note' => 'curang'])->assertForbidden();
-        $this->assertSame(10, $this->balance());
+        $this->assertSame(15, $this->balance());
     }
 }

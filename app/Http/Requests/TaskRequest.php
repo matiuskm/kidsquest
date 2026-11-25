@@ -36,8 +36,8 @@ class TaskRequest extends FormRequest
                 return;
             }
 
-            $task->recurrence->value !== $this->input('recurrence') && $validator->errors()->add('recurrence', 'Jadwal tidak bisa diubah karena tugas ini sudah pernah dikerjakan. Buat tugas baru.');
-            $task->start_date->toDateString() !== $this->input('start_date') && $validator->errors()->add('start_date', 'Tanggal mulai tidak bisa diubah karena tugas ini sudah pernah dikerjakan.');
+            $task->recurrence->value !== $this->input('recurrence') && $validator->errors()->add('recurrence', __('Jadwal tidak bisa diubah karena tugas ini sudah pernah dikerjakan. Buat tugas baru.'));
+            $task->start_date->toDateString() !== $this->input('start_date') && $validator->errors()->add('start_date', __('Tanggal mulai tidak bisa diubah karena tugas ini sudah pernah dikerjakan.'));
         }];
     }
 

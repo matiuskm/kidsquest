@@ -24,6 +24,6 @@ class ExamController extends Controller
             return back()->withErrors(['photo' => $e->getMessage()])->with('sound', 'reject');
         }
 
-        return redirect()->route('child.exams')->with('status', 'Nilai terkirim! Tunggu ortu periksa ya ✨')->with('sound', 'submit');
+        return redirect()->route('child.exams')->with('status', __('Nilai terkirim! Tunggu ortu periksa ya ✨'))->with('sound', 'submit');
     }
 }

@@ -22,7 +22,7 @@ final class ExamService
 
             // Satu ulangan per mata pelajaran menunggu keputusan; sekaligus menahan dobel-tap dan kiriman berulang.
             if (ExamResult::where(['child_id' => $child->id, 'subject' => $subject, 'status' => ReviewStatus::Pending])->exists()) {
-                throw new AlreadySubmitted("Nilai $subject masih menunggu ortu.");
+                throw new AlreadySubmitted(__('Nilai :subject masih menunggu ortu.', ['subject' => $subject]));
             }
 
             $path = $this->photos->store($photo);
@@ -39,8 +39,9 @@ final class ExamService
 
                 DB::afterCommit(fn () => $this->notifier->toParent(
                     'Nilai dikirim 📝',
-                    "{$child->name} mengirim nilai {$subject}.",
+                    ':name mengirim nilai :subject.',
                     route('parent.dashboard', absolute: false),
+                    ['name' => $child->name, 'subject' => $subject],
                 ));
 
                 return $exam;

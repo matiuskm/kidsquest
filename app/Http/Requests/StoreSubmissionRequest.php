@@ -14,10 +14,10 @@ class StoreSubmissionRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'photo.required' => 'Ambil fotonya dulu ya.',
-            'photo.image' => 'Itu bukan foto. Coba lagi ya.',
-            'photo.max' => 'Fotonya terlalu besar (maksimal 10 MB).',
-            'photo.uploaded' => 'Fotonya terlalu besar (maksimal 10 MB).',
+            'photo.required' => __('Ambil fotonya dulu ya.'),
+            'photo.image' => __('Itu bukan foto. Coba lagi ya.'),
+            'photo.max' => __('Fotonya terlalu besar (maksimal 10 MB).'),
+            'photo.uploaded' => __('Fotonya terlalu besar (maksimal 10 MB).'),
         ];
     }
 }

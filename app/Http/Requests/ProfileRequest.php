@@ -16,7 +16,7 @@ class ProfileRequest extends FormRequest
             'pin' => ['nullable', 'digits:4'],
             'current_pin' => [
                 'required_with:pin', 'nullable',
-                fn ($attr, $value, $fail) => Hash::check((string) $value, $this->user()->pin_hash) || $fail('PIN lama salah.'),
+                fn ($attr, $value, $fail) => Hash::check((string) $value, $this->user()->pin_hash) || $fail(__('PIN lama salah.')),
             ],
         ];
     }

@@ -82,8 +82,9 @@ final class MissionService
 
                 DB::afterCommit(fn () => $this->notifier->toParent(
                     'Misi dikirim 📷',
-                    "{$child->name} mengirim “{$task->title}”.",
+                    ':name mengirim “:title”.',
                     route('parent.dashboard', absolute: false),
+                    ['name' => $child->name, 'title' => $task->title],
                 ));
 
                 return $submission;

@@ -1,11 +1,11 @@
 @extends($layout)
 
-@section('title', 'Chat '.$other->name)
+@section('title', __('Chat').' '.$other->name)
 
 @section('content')
     @php $me = auth()->user(); $last = $messages->last()?->id ?? 0; @endphp
     <div class="mb-3 flex items-center gap-3">
-        <a href="{{ route('chat.index') }}" class="text-2xl" aria-label="Kembali">←</a>
+        <a href="{{ route('chat.index') }}" class="text-2xl" aria-label="{{ __('Kembali') }}">←</a>
         <h1 class="text-xl font-extrabold">{{ $other->isParent() ? '👤' : $other->avatar }} {{ $other->name }}</h1>
     </div>
 
@@ -40,7 +40,7 @@
     <form method="POST" action="{{ route('chat.store', $other) }}" x-data="{ busy: false }" @submit="busy = true"
         class="sticky bottom-24 mt-4 flex gap-2 rounded-2xl bg-white/95 p-2 shadow-lg">
         @csrf
-        <input name="body" maxlength="500" required autocomplete="off" placeholder="Tulis pesan…" class="min-w-0 flex-1 rounded-xl border px-3 py-2 text-base">
-        <button :disabled="busy" class="rounded-xl bg-indigo-600 px-4 py-2 text-base text-white disabled:opacity-50">Kirim</button>
+        <input name="body" maxlength="500" required autocomplete="off" placeholder="{{ __('Tulis pesan…') }}" class="min-w-0 flex-1 rounded-xl border px-3 py-2 text-base">
+        <button :disabled="busy" class="rounded-xl bg-indigo-600 px-4 py-2 text-base text-white disabled:opacity-50">{{ __('Kirim') }}</button>
     </form>
 @endsection
