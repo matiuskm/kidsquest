@@ -46,7 +46,7 @@
 <ul class="mb-8 divide-y rounded-xl bg-white shadow">
     @forelse ($exams as $e)
         <li class="flex justify-between p-3 text-sm">
-            <span>{{ $e->child->name }} · {{ $e->subject }}@if ($e->status === \App\Enums\ReviewStatus::Approved) · {{ $e->final_score }} ({{ $e->grade()->letter }}{{ $e->points_awarded ? ', +'.$e->points_awarded : '' }})@endif</span>
+            <span>{{ $e->child->name }} · {{ $e->subject }}@if ($e->status === \App\Enums\ReviewStatus::Approved) · {{ $e->mark() }} ({{ $e->grade()->letter }}{{ $e->points_awarded ? ', +'.$e->points_awarded : '' }})@endif</span>
             <span class="{{ $e->status === \App\Enums\ReviewStatus::Approved ? 'text-green-700' : 'text-red-700' }}">
                 {{ $e->status === \App\Enums\ReviewStatus::Approved ? 'Disetujui' : 'Ditolak' }} · {{ $e->reviewed_at?->format('d/m H:i') }}
             </span>

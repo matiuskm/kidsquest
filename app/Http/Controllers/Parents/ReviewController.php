@@ -27,9 +27,9 @@ class ReviewController extends Controller
 
     public function approveExam(Request $request, ExamResult $exam, ReviewService $reviews)
     {
-        $score = $request->validate(['score' => ['nullable', 'integer', 'between:0,100']])['score'] ?? null;
+        $data = $request->validate(['score' => ['nullable', 'integer', 'between:0,100'], 'letter' => ['nullable', 'in:A,B,C,D,E']]);
 
-        return $this->decide(fn () => $reviews->approveExam($exam, $score === null ? null : (int) $score), 'Nilai disetujui ✅');
+        return $this->decide(fn () => $reviews->approveExam($exam, isset($data['score']) ? (int) $data['score'] : null, $data['letter'] ?? null), 'Nilai disetujui ✅');
     }
 
     public function rejectExam(Request $request, ExamResult $exam, ReviewService $reviews)

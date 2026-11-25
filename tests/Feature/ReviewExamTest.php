@@ -77,6 +77,33 @@ class ReviewExamTest extends TestCase
         $this->assertSame(0, PointTransaction::where('type', LedgerType::Exam)->count());
     }
 
+    public function test_letter_exam_awards_points_by_letter(): void
+    {
+        $exam = ExamResult::factory()->withPhoto()->create(['child_id' => $this->child->id, 'claimed_score' => null, 'claimed_letter' => 'B']);
+        $this->approve($exam);
+
+        $exam->refresh();
+        $this->assertSame('B', $exam->final_letter);
+        $this->assertNull($exam->final_score);
+        $this->assertSame(4, $exam->points_awarded);
+        $this->assertSame(4, $this->balance());
+    }
+
+    public function test_letter_correction_and_low_letter(): void
+    {
+        $exam = ExamResult::factory()->withPhoto()->create(['child_id' => $this->child->id, 'claimed_score' => null, 'claimed_letter' => 'A']);
+        $this->approve($exam, ['letter' => 'C']);
+        $this->assertSame(3, $this->balance());
+
+        $low = ExamResult::factory()->withPhoto()->create(['child_id' => $this->child->id, 'claimed_score' => null, 'claimed_letter' => 'D']);
+        $this->approve($low);
+        $this->assertSame(0, $low->refresh()->points_awarded);
+        $this->assertSame(3, $this->balance());
+
+        $this->approve(ExamResult::factory()->withPhoto()->create(['child_id' => $this->child->id, 'claimed_score' => null, 'claimed_letter' => 'A']), ['letter' => 'Z'])
+            ->assertSessionHasErrors('letter');
+    }
+
     public function test_approve_twice_writes_one_ledger_entry(): void
     {
         $this->approve($this->exam);

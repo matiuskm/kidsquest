@@ -19,7 +19,7 @@ class ExamController extends Controller
     public function store(StoreExamResultRequest $request, ExamService $exams)
     {
         try {
-            $exams->submit($request->user(), $request->string('subject')->trim()->toString(), $request->integer('score'), $request->file('photo'));
+            $exams->submit($request->user(), $request->string('subject')->trim()->toString(), $request->filled('score') ? $request->integer('score') : null, $request->input('letter'), $request->file('photo'));
         } catch (AlreadySubmitted|InvalidImage $e) {
             return back()->withErrors(['photo' => $e->getMessage()])->with('sound', 'reject');
         }

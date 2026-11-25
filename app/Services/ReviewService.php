@@ -45,19 +45,19 @@ final class ReviewService
     }
 
     /** Nilai akhir = koreksi parent, atau nilai klaim anak. @throws AlreadyReviewed|MissingPhoto */
-    public function approveExam(ExamResult $exam, ?int $score = null): void
+    public function approveExam(ExamResult $exam, ?int $score = null, ?string $letter = null): void
     {
-        DB::transaction(function () use ($exam, $score) {
+        DB::transaction(function () use ($exam, $score, $letter) {
             $e = $this->lockPending($exam);
 
             if (! $e->photo_path || ! Storage::disk('local')->exists($e->photo_path)) {
                 throw new MissingPhoto;
             }
 
-            $final = $score ?? $e->claimed_score;
-            $grade = ExamGrade::for($final);
+            $final = $e->isLetter() ? ['final_letter' => strtoupper($letter ?? $e->claimed_letter)] : ['final_score' => $score ?? $e->claimed_score];
+            $grade = $e->isLetter() ? ExamGrade::forLetter($final['final_letter']) : ExamGrade::for($final['final_score']);
 
-            $e->update(['status' => ReviewStatus::Approved, 'final_score' => $final, 'points_awarded' => $grade->points, 'reviewed_at' => now()]);
+            $e->update($final + ['status' => ReviewStatus::Approved, 'points_awarded' => $grade->points, 'reviewed_at' => now()]);
             $grade->points > 0 && $this->ledger->exam($e->child, $grade->points, $e);
             $this->tell($e->child, 'Nilai disetujui 📝', "{$e->subject}: {$grade->letter}".($grade->points > 0 ? ", +{$grade->points} poin." : '.'), 'child.exams');
         });

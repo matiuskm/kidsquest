@@ -15,9 +15,9 @@ final class ExamService
     public function __construct(private PhotoStore $photos, private Notifier $notifier) {}
 
     /** @throws AlreadySubmitted|\App\Exceptions\InvalidImage */
-    public function submit(User $child, string $subject, int $score, UploadedFile $photo): ExamResult
+    public function submit(User $child, string $subject, ?int $score, ?string $letter, UploadedFile $photo): ExamResult
     {
-        return DB::transaction(function () use ($child, $subject, $score, $photo) {
+        return DB::transaction(function () use ($child, $subject, $score, $letter, $photo) {
             User::whereKey($child->id)->lockForUpdate()->first(); // serialisasi dobel-tap
 
             // Satu ulangan per mata pelajaran menunggu keputusan; sekaligus menahan dobel-tap dan kiriman berulang.
@@ -32,6 +32,7 @@ final class ExamService
                     'child_id' => $child->id,
                     'subject' => $subject,
                     'claimed_score' => $score,
+                    'claimed_letter' => $letter,
                     'photo_path' => $path,
                     'status' => ReviewStatus::Pending,
                 ]);
