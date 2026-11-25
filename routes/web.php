@@ -27,6 +27,8 @@ Route::middleware(['role:parent', ParentIdleTimeout::class])->prefix('orangtua')
     Route::get('riwayat', Parents\HistoryController::class)->name('parent.history');
     Route::post('periksa/submission/{submission}/setuju', [Parents\ReviewController::class, 'approveSubmission'])->name('parent.submissions.approve');
     Route::post('periksa/submission/{submission}/tolak', [Parents\ReviewController::class, 'rejectSubmission'])->name('parent.submissions.reject');
+    Route::post('periksa/submission/{submission}/batal', [Parents\ReviewController::class, 'undoSubmission'])->name('parent.submissions.undo');
+    Route::post('periksa/nilai/{exam}/batal', [Parents\ReviewController::class, 'undoExam'])->name('parent.exams.undo');
     Route::post('periksa/nilai/{exam}/setuju', [Parents\ReviewController::class, 'approveExam'])->name('parent.exams.approve');
     Route::post('periksa/nilai/{exam}/tolak', [Parents\ReviewController::class, 'rejectExam'])->name('parent.exams.reject');
     Route::post('periksa/klaim/{redemption}/setuju', [Parents\ReviewController::class, 'approveRedemption'])->name('parent.redemptions.approve');

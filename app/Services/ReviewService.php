@@ -94,6 +94,26 @@ final class ReviewService
         });
     }
 
+    /** Batalkan persetujuan: poin ditarik lagi, item kembali ke antrean. @throws AlreadyReviewed|InsufficientPoints */
+    public function undoSubmission(Submission $submission): void
+    {
+        DB::transaction(function () use ($submission) {
+            $s = $this->lockPending($submission, ReviewStatus::Approved);
+            $this->ledger->adjust($s->child, -$s->task->points, "Batal: {$s->task->title}");
+            $s->update(['status' => ReviewStatus::Pending, 'reviewed_at' => null]);
+        });
+    }
+
+    /** @throws AlreadyReviewed|InsufficientPoints */
+    public function undoExam(ExamResult $exam): void
+    {
+        DB::transaction(function () use ($exam) {
+            $e = $this->lockPending($exam, ReviewStatus::Approved);
+            $e->points_awarded > 0 && $this->ledger->adjust($e->child, -$e->points_awarded, "Batal nilai: {$e->subject}");
+            $e->update(['status' => ReviewStatus::Pending, 'final_score' => null, 'final_letter' => null, 'points_awarded' => null, 'reviewed_at' => null]);
+        });
+    }
+
     /** Push dikirim setelah transaksi berhasil commit. */
     private function tell(\App\Models\User $child, string $title, string $body, string $route): void
     {
@@ -101,10 +121,10 @@ final class ReviewService
     }
 
     /** @template T of Model @param T $model @return T */
-    private function lockPending(Model $model): Model
+    private function lockPending(Model $model, ReviewStatus $expected = ReviewStatus::Pending): Model
     {
         $locked = $model::whereKey($model->getKey())->lockForUpdate()->firstOrFail();
 
-        return $locked->status === ReviewStatus::Pending ? $locked : throw new AlreadyReviewed;
+        return $locked->status === $expected ? $locked : throw new AlreadyReviewed;
     }
 }
