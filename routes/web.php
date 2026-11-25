@@ -5,6 +5,7 @@ use App\Http\Controllers\Child;
 use App\Http\Controllers\ChildLoginController;
 use App\Http\Controllers\Parents;
 use App\Http\Controllers\PhotoController;
+use App\Http\Controllers\PushSubscriptionController;
 use App\Http\Middleware\AwardBirthdayBonus;
 use App\Models\User;
 use Illuminate\Support\Facades\Route;
@@ -41,6 +42,11 @@ Route::middleware(['role:child', AwardBirthdayBonus::class])->group(function () 
     Route::get('/hadiah', [Child\RewardController::class, 'index'])->name('child.rewards');
     Route::post('/hadiah/{reward}', [Child\RewardController::class, 'claim'])->name('child.claim');
     Route::post('/misi/{task}', [Child\MissionController::class, 'store'])->name('child.submit');
+});
+
+Route::middleware('auth')->group(function () {
+    Route::post('/push/subscribe', [PushSubscriptionController::class, 'store'])->name('push.subscribe');
+    Route::delete('/push/subscribe', [PushSubscriptionController::class, 'destroy'])->name('push.unsubscribe');
 });
 
 Route::get('/foto/{submission}', PhotoController::class)->middleware('auth')->name('photos.show');

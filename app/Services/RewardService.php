@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\DB;
 
 final class RewardService
 {
-    public function __construct(private PointsLedger $ledger) {}
+    public function __construct(private PointsLedger $ledger, private Notifier $notifier) {}
 
     /** Poin dipotong saat klaim (dikembalikan bila ditolak). Rollback penuh bila saldo kurang. @throws InsufficientPoints|RewardUnavailable */
     public function claim(User $child, Reward $reward): Redemption
@@ -29,6 +29,12 @@ final class RewardService
                 'status' => ReviewStatus::Pending,
             ]);
             $this->ledger->redeem($child, $redemption->cost, $redemption);
+
+            DB::afterCommit(fn () => $this->notifier->toParent(
+                'Klaim hadiah 🎁',
+                "{$child->name} ingin menukar “{$reward->name}”.",
+                route('parent.dashboard', absolute: false),
+            ));
 
             return $redemption;
         });

@@ -11,13 +11,15 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
+use NotificationChannels\WebPush\HasPushSubscriptions;
 
 #[Fillable(['name', 'email', 'password', 'role', 'avatar', 'pin_hash', 'birthday_month', 'birthday_day'])]
 #[Hidden(['password', 'remember_token', 'pin_hash'])]
 class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */
-    use HasFactory, SoftDeletes;
+    use HasFactory, HasPushSubscriptions, Notifiable, SoftDeletes;
 
     protected static function booted(): void
     {

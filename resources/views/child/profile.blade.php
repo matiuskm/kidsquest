@@ -26,4 +26,6 @@
         <p class="text-base">🎂 Ulang tahun: {{ $child->birthday_day }}/{{ $child->birthday_month }}</p>
         <button class="w-full rounded-2xl bg-pink-400 py-3 text-white">Simpan</button>
     </form>
+
+    <x-push-toggle class="mt-6 text-center text-base" />
 @endsection

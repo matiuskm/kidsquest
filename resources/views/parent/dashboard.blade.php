@@ -5,6 +5,8 @@
 @section('content')
 @include('parent._status')
 
+<x-push-toggle class="mb-4 text-sm text-slate-600" />
+
 <section class="mb-8">
     <h2 class="mb-2 font-bold">Perlu diperiksa @if ($pending->count() + $claims->count() > 0)<span class="rounded-full bg-red-600 px-2 text-xs text-white">{{ $pending->count() + $claims->count() }}</span>@endif</h2>
     <ul class="divide-y rounded-xl bg-white shadow">

@@ -13,8 +13,9 @@
                     <a href="{{ route('parent.rewards.index') }}">Hadiah</a>
                     <a href="{{ route('parent.history') }}">Riwayat</a>
                 </nav>
-                <form method="POST" action="{{ route('logout') }}">
+                <form method="POST" action="{{ route('logout') }}" x-data="logoutForm" @submit.prevent="submit($event)">
                     @csrf
+                    <input type="hidden" name="push_endpoint">
                     <button class="text-sm text-slate-600 hover:underline">Keluar</button>
                 </form>
             @endauth

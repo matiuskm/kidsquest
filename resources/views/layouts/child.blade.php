@@ -4,10 +4,15 @@
 
 @section('body')
     <main class="mx-auto max-w-xl px-4 pb-28 pt-6">
+        @if (session('sound'))
+            <div x-data x-init="$store.fx.play(@js(session('sound')))"></div>
+        @endif
         @if (session('birthday'))
+            <div x-data x-init="$store.fx.confetti(); $store.fx.play('points')"></div>
             <div class="mb-4 rounded-3xl bg-pink-300 p-5 text-center text-2xl font-extrabold">🎂 Selamat ulang tahun, {{ session('birthday') }}! 🎉<br>Bonus ⭐ {{ config('kidsquest.birthday_bonus') }} poin untukmu!</div>
         @endif
         @auth
+            <div x-data x-init="$store.fx.watch('points-{{ auth()->id() }}', {{ auth()->user()->points }}, 'points', true)"></div>
             <div class="mb-4 flex items-center justify-between">
                 <span>{{ auth()->user()->avatar }} {{ auth()->user()->name }}</span>
                 <span class="rounded-full bg-yellow-300 px-4 py-1">⭐ {{ auth()->user()->points }} poin</span>
@@ -22,8 +27,9 @@
                 <a href="{{ route('child.missions') }}" class="rounded-2xl px-4 py-2 hover:bg-yellow-100">🎯 Misi</a>
                 <a href="{{ route('child.rewards') }}" class="rounded-2xl px-4 py-2 hover:bg-yellow-100">🎁 Hadiah</a>
                 <a href="{{ route('child.profile') }}" class="rounded-2xl px-4 py-2 hover:bg-yellow-100">🙂 Saya</a>
-                <form method="POST" action="{{ route('logout') }}">
+                <form method="POST" action="{{ route('logout') }}" x-data="logoutForm" @submit.prevent="submit($event)">
                     @csrf
+                    <input type="hidden" name="push_endpoint">
                     <button class="rounded-2xl px-4 py-2 hover:bg-pink-100">👋 Ganti anak / Keluar</button>
                 </form>
             </div>

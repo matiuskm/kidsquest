@@ -12,6 +12,8 @@
         <div class="mb-4 rounded-2xl bg-rose-200 p-4">{{ $message }}</div>
     @enderror
 
+    <div x-data x-init="$store.fx.watch('rejected-{{ auth()->id() }}', {{ $missions->where('status', \App\Enums\MissionStatus::Rejected)->count() }}, 'reject')"></div>
+
     <div class="space-y-4">
         @forelse ($missions as $mission)
             <x-mission-card :mission="$mission" />
