@@ -9,3 +9,13 @@
 }
 
 [x-cloak] { display: none !important; }
+
+/* Animasi seperlunya */
+@keyframes kq-pop-in { from { opacity: 0; transform: translateY(12px) scale(.96); } to { opacity: 1; transform: none; } }
+@keyframes kq-confetti-fall { from { transform: translateY(-10vh) rotate(0); opacity: 1; } to { transform: translateY(110vh) rotate(540deg); opacity: .9; } }
+
+.kq-pop { animation: kq-pop-in .35s ease-out both; }
+.kq-confetti { position: fixed; inset: 0; z-index: 50; pointer-events: none; overflow: hidden; }
+.kq-confetti span { position: absolute; top: 0; font-size: 1.75rem; animation: kq-confetti-fall 3s linear forwards; }
+
+@media (prefers-reduced-motion: reduce) { .kq-pop, .kq-confetti span { animation: none; } }

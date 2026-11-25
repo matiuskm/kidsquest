@@ -22,9 +22,9 @@ class MissionController extends Controller
         try {
             $missions->submit($request->user(), $task, $request->file('photo'), now()->toImmutable());
         } catch (NotDueToday|AlreadySubmitted|InvalidImage $e) {
-            return back()->withErrors(['photo' => $e->getMessage()]);
+            return back()->withErrors(['photo' => $e->getMessage()])->with('sound', 'reject');
         }
 
-        return redirect()->route('child.missions')->with('status', 'Foto terkirim! Tunggu ortu periksa ya ✨');
+        return redirect()->route('child.missions')->with('status', 'Foto terkirim! Tunggu ortu periksa ya ✨')->with('sound', 'submit');
     }
 }

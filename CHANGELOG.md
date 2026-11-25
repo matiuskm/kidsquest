@@ -4,6 +4,10 @@ Format mengikuti [Keep a Changelog](https://keepachangelog.com/), versi mengikut
 
 ## [Unreleased]
 ### Added
+- PWA (manifest, service worker, ikon), notifikasi Web Push (parent: kiriman \& klaim; anak: keputusan), suara (poin masuk, klaim, ditolak, kirim), konfeti dan animasi kartu.
+
+## [0.2.0] - 2026-11-25
+### Added
 - Login orang tua (email+password) dan anak (avatar + PIN 4 digit, throttle 5x/5 menit per anak), middleware role, perintah `kidsquest:make-parent`.
 - Ledger poin append-only (`PointsLedger`): earn, redeem, refund, adjust, birthday; saldo tidak bisa minus.
 - Tugas (sekali/harian/mingguan/bulanan) dengan penjadwalan tanpa cron dan CRUD parent.

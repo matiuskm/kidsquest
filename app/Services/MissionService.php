@@ -19,7 +19,7 @@ use Throwable;
 
 final class MissionService
 {
-    public function __construct(private TaskSchedule $schedule, private PhotoStore $photos) {}
+    public function __construct(private TaskSchedule $schedule, private PhotoStore $photos, private Notifier $notifier) {}
 
     /** @return Collection<int, Mission> */
     public function todayFor(User $child, CarbonImmutable $date): Collection
@@ -72,13 +72,21 @@ final class MissionService
             $path = $this->photos->store($photo);
 
             try {
-                return Submission::create([
+                $submission = Submission::create([
                     'task_id' => $task->id,
                     'child_id' => $child->id,
                     'period_date' => $period,
                     'photo_path' => $path,
                     'status' => ReviewStatus::Pending,
                 ]);
+
+                DB::afterCommit(fn () => $this->notifier->toParent(
+                    'Misi dikirim 📷',
+                    "{$child->name} mengirim “{$task->title}”.",
+                    route('parent.dashboard', absolute: false),
+                ));
+
+                return $submission;
             } catch (Throwable $e) {
                 $this->photos->delete($path);
 

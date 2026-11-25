@@ -17,7 +17,7 @@
     };
 @endphp
 
-<article class="{{ $style }} rounded-3xl p-5 shadow-lg">
+<article class="kq-pop {{ $style }} rounded-3xl p-5 shadow-lg">
     <div class="flex items-start justify-between gap-3">
         <h2 class="text-2xl font-extrabold">{{ $m->task->title }}</h2>
         <span class="shrink-0 rounded-full bg-yellow-300 px-3 py-1 text-lg">⭐ {{ $m->task->points }}</span>

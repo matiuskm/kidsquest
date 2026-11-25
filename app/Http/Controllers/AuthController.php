@@ -31,6 +31,10 @@ class AuthController extends Controller
     {
         $wasParent = $request->user()?->isParent();
 
+        if ($endpoint = $request->string('push_endpoint')->toString()) {
+            $request->user()?->deletePushSubscription($endpoint);
+        }
+
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();

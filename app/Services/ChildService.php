@@ -17,6 +17,7 @@ final class ChildService
     {
         DB::transaction(function () use ($child) {
             $note = 'Akun anak dihapus';
+            $child->pushSubscriptions()->delete(); // sebelum penolakan agar tidak ada push ke akun yang dihapus
 
             Submission::where('child_id', $child->id)->where('status', ReviewStatus::Pending)->get()
                 ->each(fn (Submission $s) => $this->reviews->rejectSubmission($s, $note));

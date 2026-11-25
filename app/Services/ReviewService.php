@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Storage;
 /** Keputusan parent atas submission dan klaim hadiah. Idempotent: hanya dari `pending`. */
 final class ReviewService
 {
-    public function __construct(private PointsLedger $ledger) {}
+    public function __construct(private PointsLedger $ledger, private Notifier $notifier) {}
 
     /** @throws AlreadyReviewed|MissingPhoto */
     public function approveSubmission(Submission $submission): void
@@ -28,6 +28,7 @@ final class ReviewService
 
             $s->update(['status' => ReviewStatus::Approved, 'reviewed_at' => now()]);
             $this->ledger->earn($s->child, $s->task->points, $s);
+            $this->tell($s->child, 'Poin masuk! ⭐', "+{$s->task->points} poin untuk “{$s->task->title}”.", 'child.missions');
         });
     }
 
@@ -35,18 +36,20 @@ final class ReviewService
     public function rejectSubmission(Submission $submission, ?string $note = null): void
     {
         DB::transaction(function () use ($submission, $note) {
-            $this->lockPending($submission)->update([
-                'status' => ReviewStatus::Rejected,
-                'reject_note' => $note,
-                'reviewed_at' => now(),
-            ]);
+            $s = $this->lockPending($submission);
+            $s->update(['status' => ReviewStatus::Rejected, 'reject_note' => $note, 'reviewed_at' => now()]);
+            $this->tell($s->child, 'Coba lagi 🔁', "“{$s->task->title}” ditolak".($note ? ": $note" : '.'), 'child.missions');
         });
     }
 
     /** @throws AlreadyReviewed */
     public function approveRedemption(Redemption $redemption): void
     {
-        DB::transaction(fn () => $this->lockPending($redemption)->update(['status' => ReviewStatus::Approved, 'reviewed_at' => now()]));
+        DB::transaction(function () use ($redemption) {
+            $r = $this->lockPending($redemption);
+            $r->update(['status' => ReviewStatus::Approved, 'reviewed_at' => now()]);
+            $this->tell($r->child, 'Hadiah disetujui 🎁', "“{$r->reward->name}” siap kamu ambil!", 'child.rewards');
+        });
     }
 
     /** Poin dikembalikan sebesar snapshot biaya, tepat sekali. @throws AlreadyReviewed */
@@ -56,7 +59,14 @@ final class ReviewService
             $r = $this->lockPending($redemption);
             $r->update(['status' => ReviewStatus::Rejected, 'reject_note' => $note, 'reviewed_at' => now()]);
             $this->ledger->refund($r->child, $r->cost, $r);
+            $this->tell($r->child, 'Klaim ditolak', "Poin {$r->cost} dikembalikan.".($note ? " $note" : ''), 'child.rewards');
         });
+    }
+
+    /** Push dikirim setelah transaksi berhasil commit. */
+    private function tell(\App\Models\User $child, string $title, string $body, string $route): void
+    {
+        DB::afterCommit(fn () => $this->notifier->toChild($child, $title, $body, route($route, absolute: false)));
     }
 
     /** @template T of Model @param T $model @return T */
