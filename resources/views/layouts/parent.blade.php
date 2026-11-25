@@ -7,6 +7,9 @@
         <div class="mx-auto flex max-w-4xl items-center justify-between px-4 py-3">
             <a href="{{ route('parent.dashboard') }}" class="font-bold text-indigo-700">KidsQuest</a>
             @auth
+                <nav class="flex gap-4 text-sm">
+                    <a href="{{ route('parent.tasks.index') }}">Tugas</a>
+                </nav>
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
                     <button class="text-sm text-slate-600 hover:underline">Keluar</button>

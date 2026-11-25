@@ -15,6 +15,8 @@ Route::post('/keluar', [AuthController::class, 'destroy'])->name('logout');
 
 Route::middleware('role:parent')->prefix('orangtua')->group(function () {
     Route::get('/', Parents\DashboardController::class)->name('parent.dashboard');
+    Route::resource('tugas', Parents\TaskController::class)->except('show')
+        ->parameters(['tugas' => 'task'])->names('parent.tasks');
 });
 
 Route::middleware('role:child')->group(function () {
