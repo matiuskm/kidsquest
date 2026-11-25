@@ -1,0 +1,7 @@
+{
+  "enabledPlugins": {
+    "superpowers@superpowers-dev": true,
+    "ponytail@ponytail": true,
+    "agent-skills@addy-agent-skills": true
+  }
+}
