@@ -43,6 +43,12 @@ class User extends Authenticatable
         return $this->belongsToMany(Task::class, 'task_child', 'user_id', 'task_id');
     }
 
+    /** Saldo poin (dari ledger). */
+    public function getPointsAttribute(): int
+    {
+        return app(\App\Services\PointsLedger::class)->balance($this);
+    }
+
     public function scopeChildren(Builder $query): void
     {
         $query->where('role', Role::Child);

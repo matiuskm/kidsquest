@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Child;
 use App\Http\Controllers\ChildLoginController;
 use App\Http\Controllers\Parents;
+use App\Http\Controllers\PhotoController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [ChildLoginController::class, 'pick'])->name('child.pick');
@@ -21,4 +22,7 @@ Route::middleware('role:parent')->prefix('orangtua')->group(function () {
 
 Route::middleware('role:child')->group(function () {
     Route::get('/misi', [Child\MissionController::class, 'index'])->name('child.missions');
+    Route::post('/misi/{task}', [Child\MissionController::class, 'store'])->name('child.submit');
 });
+
+Route::get('/foto/{submission}', PhotoController::class)->middleware('auth')->name('photos.show');

@@ -4,6 +4,12 @@
 
 @section('body')
     <main class="mx-auto max-w-xl px-4 pb-28 pt-6">
+        @auth
+            <div class="mb-4 flex items-center justify-between">
+                <span>{{ auth()->user()->avatar }} {{ auth()->user()->name }}</span>
+                <span class="rounded-full bg-yellow-300 px-4 py-1">⭐ {{ auth()->user()->points }} poin</span>
+            </div>
+        @endauth
         @yield('content')
     </main>
 
