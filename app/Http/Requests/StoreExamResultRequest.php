@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests;
 
+use App\Support\ExamGrade;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class StoreExamResultRequest extends FormRequest
 {
@@ -16,7 +18,7 @@ class StoreExamResultRequest extends FormRequest
         return [
             'subject' => ['required', 'string', 'max:60'],
             'score' => ['required_without:letter', 'nullable', 'prohibits:letter', 'integer', 'between:0,100'],
-            'letter' => ['required_without:score', 'nullable', 'in:A,B,C,D,E'],
+            'letter' => ['required_without:score', 'nullable', Rule::in(ExamGrade::LETTERS)],
             'photo' => ['required', 'file', 'image', 'max:10240'],
         ];
     }
@@ -27,7 +29,7 @@ class StoreExamResultRequest extends FormRequest
             'subject.required' => 'Tulis mata pelajarannya ya.',
             'score.required' => 'Isi nilainya ya.',
             'score.integer' => 'Nilai harus angka bulat.',
-            'letter.in' => 'Huruf harus A, B, C, D, atau E.',
+            'letter.in' => 'Pilih huruf dari A sampai E (boleh + atau -).',
             'score.between' => 'Nilai harus antara 0 sampai 100.',
             'photo.required' => 'Foto kertas ulangannya dulu ya.',
             'photo.image' => 'Itu bukan foto. Coba lagi ya.',

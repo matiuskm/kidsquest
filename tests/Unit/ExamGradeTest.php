@@ -28,7 +28,7 @@ class ExamGradeTest extends TestCase
 
     public static function letters(): array
     {
-        return [['A', 5], ['B', 4], ['C', 3], ['D', 0], ['E', 0], ['b', 4]];
+        return [['A', 5], ['B', 4], ['C', 3], ['D', 0], ['E', 0], ['b', 4], ['B+', 4], ['A-', 5], ['d-', 0]];
     }
 
     #[DataProvider('letters')]
@@ -45,6 +45,13 @@ class ExamGradeTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
 
         ExamGrade::forLetter('F');
+    }
+
+    public function test_double_modifier_is_rejected(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        ExamGrade::forLetter('B++');
     }
 
     #[DataProvider('outOfRange')]

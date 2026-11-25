@@ -9,7 +9,8 @@ final readonly class ExamGrade
 {
     private function __construct(public string $letter, public int $points) {}
 
-    public const LETTERS = ['A', 'B', 'C', 'D', 'E'];
+    /** Huruf yang dipilih anak/parent: A+ ... E-. Plus/minus tidak mengubah poin. */
+    public const LETTERS = ['A+', 'A', 'A-', 'B+', 'B', 'B-', 'C+', 'C', 'C-', 'D+', 'D', 'D-', 'E+', 'E', 'E-'];
 
     /** Penilaian huruf: poin dari config; huruf yang tidak ada di config (E) tidak dapat poin. */
     public static function forLetter(string $letter): self
@@ -17,10 +18,11 @@ final readonly class ExamGrade
         $letter = strtoupper($letter);
 
         if (! in_array($letter, self::LETTERS, true)) {
-            throw new InvalidArgumentException('Huruf harus A sampai E.');
+            throw new InvalidArgumentException('Huruf harus A sampai E (boleh + atau -).');
         }
 
-        $band = collect(config('kidsquest.exam_grades'))->first(fn ($b) => $b[1] === $letter);
+        $base = rtrim($letter, '+-');
+        $band = collect(config('kidsquest.exam_grades'))->first(fn ($b) => $b[1] === $base);
 
         return new self($letter, $band[2] ?? 0);
     }

@@ -104,6 +104,18 @@ class ReviewExamTest extends TestCase
             ->assertSessionHasErrors('letter');
     }
 
+    public function test_plus_minus_letter_uses_base_letter_points(): void
+    {
+        $exam = ExamResult::factory()->withPhoto()->create(['child_id' => $this->child->id, 'claimed_score' => null, 'claimed_letter' => 'A-']);
+        $this->approve($exam);
+        $this->assertSame(5, $this->balance());
+
+        $other = ExamResult::factory()->withPhoto()->create(['child_id' => $this->child->id, 'claimed_score' => null, 'claimed_letter' => 'A']);
+        $this->approve($other, ['letter' => 'B+']);
+        $this->assertSame('B+', $other->refresh()->final_letter);
+        $this->assertSame(9, $this->balance());
+    }
+
     public function test_approve_twice_writes_one_ledger_entry(): void
     {
         $this->approve($this->exam);

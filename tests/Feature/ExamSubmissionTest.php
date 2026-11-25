@@ -62,6 +62,13 @@ class ExamSubmissionTest extends TestCase
         $this->assertNull($exam->claimed_score);
     }
 
+    public function test_plus_and_minus_letters_are_accepted(): void
+    {
+        $this->send(['score' => null, 'letter' => 'a-'])->assertSessionDoesntHaveErrors();
+
+        $this->assertSame('A-', ExamResult::firstOrFail()->claimed_letter);
+    }
+
     public function test_letter_must_be_valid_and_exclusive_with_score(): void
     {
         $this->send(['score' => null, 'letter' => 'Z'])->assertSessionHasErrors('letter');
