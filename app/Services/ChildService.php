@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Enums\ReviewStatus;
+use App\Models\ExamResult;
 use App\Models\Redemption;
 use App\Models\Submission;
 use App\Models\User;
@@ -21,12 +22,19 @@ final class ChildService
 
             Submission::where('child_id', $child->id)->where('status', ReviewStatus::Pending)->get()
                 ->each(fn (Submission $s) => $this->reviews->rejectSubmission($s, $note));
+            ExamResult::where('child_id', $child->id)->where('status', ReviewStatus::Pending)->get()
+                ->each(fn (ExamResult $e) => $this->reviews->rejectExam($e, $note));
             Redemption::where('child_id', $child->id)->where('status', ReviewStatus::Pending)->get()
                 ->each(fn (Redemption $r) => $this->reviews->rejectRedemption($r, $note));
 
             Submission::where('child_id', $child->id)->whereNotNull('photo_path')->get()->each(function (Submission $s) {
                 $this->photos->delete($s->photo_path);
                 $s->update(['photo_path' => null]);
+            });
+
+            ExamResult::where('child_id', $child->id)->whereNotNull('photo_path')->get()->each(function (ExamResult $e) {
+                $this->photos->delete($e->photo_path);
+                $e->update(['photo_path' => null]);
             });
 
             $child->delete();

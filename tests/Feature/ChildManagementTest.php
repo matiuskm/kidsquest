@@ -169,4 +169,17 @@ class ChildManagementTest extends TestCase
         $this->post(route('logout'));
         $this->get(route('child.pick'))->assertDontSee($child->name);
     }
+
+    public function test_deleting_child_also_purges_exam_photos_and_rejects_pending_exams(): void
+    {
+        $child = User::factory()->child()->create();
+        Storage::disk('local')->put('photos/e.webp', 'x');
+        $exam = \App\Models\ExamResult::factory()->create(['child_id' => $child->id, 'photo_path' => 'photos/e.webp']);
+
+        $this->actingAs($this->parent)->delete(route('parent.children.destroy', $child));
+
+        Storage::disk('local')->assertMissing('photos/e.webp');
+        $this->assertNull($exam->fresh()->photo_path);
+        $this->assertSame(ReviewStatus::Rejected, $exam->fresh()->status);
+    }
 }

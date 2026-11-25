@@ -50,7 +50,7 @@ final class ReviewService
         DB::transaction(function () use ($exam, $score) {
             $e = $this->lockPending($exam);
 
-            if (! Storage::disk('local')->exists($e->photo_path)) {
+            if (! $e->photo_path || ! Storage::disk('local')->exists($e->photo_path)) {
                 throw new MissingPhoto;
             }
 
