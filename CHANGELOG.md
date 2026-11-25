@@ -3,6 +3,8 @@
 Format mengikuti [Keep a Changelog](https://keepachangelog.com/), versi mengikuti [SemVer](https://semver.org/).
 
 ## [Unreleased]
+### Added
+- Parent bisa membatalkan persetujuan tugas atau nilai ulangan dari Riwayat: poin ditarik lagi (ditolak bila poin sudah terpakai) dan item kembali ke antrean periksa.
 ### Changed
 - Menu bawah anak dirapikan: ikon di atas teks pendek (Misi, Nilai, Hadiah, Saya, Keluar), tab aktif ditandai.
 ### Changed

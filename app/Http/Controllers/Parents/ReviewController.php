@@ -27,6 +27,16 @@ class ReviewController extends Controller
         return $this->decide(fn () => $reviews->rejectSubmission($submission, $this->note($request)), 'Ditolak, anak bisa kirim ulang.');
     }
 
+    public function undoSubmission(Submission $submission, ReviewService $reviews)
+    {
+        return $this->decide(fn () => $reviews->undoSubmission($submission), 'Persetujuan dibatalkan, poin ditarik.');
+    }
+
+    public function undoExam(ExamResult $exam, ReviewService $reviews)
+    {
+        return $this->decide(fn () => $reviews->undoExam($exam), 'Persetujuan dibatalkan, poin ditarik.');
+    }
+
     public function approveExam(Request $request, ExamResult $exam, ReviewService $reviews)
     {
         $data = $request->validate(['score' => ['nullable', 'integer', 'between:0,100'], 'letter' => ['nullable', Rule::in(ExamGrade::LETTERS)]]);
