@@ -3,5 +3,20 @@
 @section('title', 'Misi')
 
 @section('content')
-    <h1 class="text-4xl font-extrabold">Halo, {{ auth()->user()->name }}! {{ auth()->user()->avatar }}</h1>
+    <h1 class="mb-4 text-4xl font-extrabold">Misi hari ini {{ auth()->user()->avatar }}</h1>
+
+    @if (session('status'))
+        <div class="mb-4 rounded-2xl bg-emerald-200 p-4">{{ session('status') }}</div>
+    @endif
+    @error('photo')
+        <div class="mb-4 rounded-2xl bg-rose-200 p-4">{{ $message }}</div>
+    @enderror
+
+    <div class="space-y-4">
+        @forelse ($missions as $mission)
+            <x-mission-card :mission="$mission" />
+        @empty
+            <p class="rounded-3xl bg-white p-6 text-center">Tidak ada misi hari ini. Santai dulu ya 😎</p>
+        @endforelse
+    </div>
 @endsection

@@ -30,6 +30,12 @@ final class TaskSchedule
         };
     }
 
+    /** Kunci periode submission: tugas sekali = start_date (satu kali seumur hidup), lainnya = tanggal kejadian. */
+    public function periodFor(Task $task, CarbonImmutable $date): CarbonImmutable
+    {
+        return $task->recurrence === Recurrence::Once ? CarbonImmutable::parse($task->start_date) : $date->startOfDay();
+    }
+
     /** @return Collection<int, Task> */
     public function dueFor(User $child, CarbonImmutable $date): Collection
     {
