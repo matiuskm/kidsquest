@@ -19,6 +19,18 @@ class User extends Authenticatable
     /** @use HasFactory<UserFactory> */
     use HasFactory, SoftDeletes;
 
+    protected static function booted(): void
+    {
+        // Tanggal lahir dikunci setelah terisi (dasar bonus ulang tahun).
+        static::updating(function (User $user) {
+            foreach (['birthday_month', 'birthday_day'] as $field) {
+                if ($user->isDirty($field) && $user->getOriginal($field) !== null) {
+                    throw new \LogicException('Tanggal lahir tidak bisa diubah.');
+                }
+            }
+        });
+    }
+
     protected function casts(): array
     {
         return [

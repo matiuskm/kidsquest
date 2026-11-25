@@ -8,6 +8,7 @@
             <a href="{{ route('parent.dashboard') }}" class="font-bold text-indigo-700">KidsQuest</a>
             @auth
                 <nav class="flex gap-4 text-sm">
+                    <a href="{{ route('parent.children.index') }}">Anak</a>
                     <a href="{{ route('parent.tasks.index') }}">Tugas</a>
                     <a href="{{ route('parent.rewards.index') }}">Hadiah</a>
                     <a href="{{ route('parent.history') }}">Riwayat</a>
