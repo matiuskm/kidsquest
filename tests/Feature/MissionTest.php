@@ -47,6 +47,15 @@ class MissionTest extends TestCase
             ->first(fn ($m) => $m->task->is($task))?->status;
     }
 
+    public function test_bottom_menu_is_short_and_marks_the_active_tab(): void
+    {
+        $html = $this->actingAs($this->child)->get(route('child.missions'))->assertOk()->getContent();
+
+        $this->assertStringNotContainsString('Ganti anak', $html);
+        $this->assertStringContainsString('>Keluar<', $html);
+        $this->assertStringContainsString('aria-current="page"', $html);
+    }
+
     public function test_child_sees_only_own_tasks(): void
     {
         $other = Task::factory()->create(['title' => 'Milik adik']);
