@@ -5,8 +5,10 @@ namespace App\Services;
 use App\Enums\ReviewStatus;
 use App\Exceptions\AlreadyReviewed;
 use App\Exceptions\MissingPhoto;
+use App\Models\ExamResult;
 use App\Models\Redemption;
 use App\Models\Submission;
+use App\Support\ExamGrade;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -39,6 +41,35 @@ final class ReviewService
             $s = $this->lockPending($submission);
             $s->update(['status' => ReviewStatus::Rejected, 'reject_note' => $note, 'reviewed_at' => now()]);
             $this->tell($s->child, 'Coba lagi 🔁', "“{$s->task->title}” ditolak".($note ? ": $note" : '.'), 'child.missions');
+        });
+    }
+
+    /** Nilai akhir = koreksi parent, atau nilai klaim anak. @throws AlreadyReviewed|MissingPhoto */
+    public function approveExam(ExamResult $exam, ?int $score = null): void
+    {
+        DB::transaction(function () use ($exam, $score) {
+            $e = $this->lockPending($exam);
+
+            if (! Storage::disk('local')->exists($e->photo_path)) {
+                throw new MissingPhoto;
+            }
+
+            $final = $score ?? $e->claimed_score;
+            $grade = ExamGrade::for($final);
+
+            $e->update(['status' => ReviewStatus::Approved, 'final_score' => $final, 'points_awarded' => $grade->points, 'reviewed_at' => now()]);
+            $grade->points > 0 && $this->ledger->exam($e->child, $grade->points, $e);
+            $this->tell($e->child, 'Nilai disetujui 📝', "{$e->subject}: {$grade->letter}".($grade->points > 0 ? ", +{$grade->points} poin." : '.'), 'child.exams');
+        });
+    }
+
+    /** @throws AlreadyReviewed */
+    public function rejectExam(ExamResult $exam, ?string $note = null): void
+    {
+        DB::transaction(function () use ($exam, $note) {
+            $e = $this->lockPending($exam);
+            $e->update(['status' => ReviewStatus::Rejected, 'reject_note' => $note, 'reviewed_at' => now()]);
+            $this->tell($e->child, 'Coba lagi 🔁', "Nilai {$e->subject} ditolak".($note ? ": $note" : '.'), 'child.exams');
         });
     }
 

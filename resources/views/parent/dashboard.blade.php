@@ -3,7 +3,7 @@
 @section('title', 'Beranda')
 
 @php
-    $queue = $pending->count() + $claims->count();
+    $queue = $pending->count() + $exams->count() + $claims->count();
     $done = $children->sum('done');
     $total = $children->sum('total');
 @endphp
@@ -42,6 +42,18 @@
                 :image="route('photos.show', $s)"
                 :approve="route('parent.submissions.approve', $s)"
                 :reject="route('parent.submissions.reject', $s)" />
+        @endforeach
+        @foreach ($exams as $e)
+            <x-review-item
+                :title="'📝 '.$e->subject.' · nilai '.$e->claimed_score"
+                :subtitle="$e->child->name.' · '.$e->created_at->format('d/m/Y')"
+                :image="route('photos.exam', $e)"
+                :approve="route('parent.exams.approve', $e)"
+                :reject="route('parent.exams.reject', $e)">
+                <x-slot:fields>
+                    <input name="score" type="number" min="0" max="100" value="{{ $e->claimed_score }}" aria-label="Nilai" class="w-16 rounded-full border px-2 py-1 text-sm">
+                </x-slot:fields>
+            </x-review-item>
         @endforeach
         @foreach ($claims as $c)
             <x-review-item

@@ -1,4 +1,4 @@
-@props(['title', 'subtitle' => null, 'image' => null, 'approve', 'reject'])
+@props(['title', 'subtitle' => null, 'image' => null, 'approve', 'reject', 'fields' => null])
 
 <li class="kq-pop flex flex-col gap-4 rounded-2xl bg-white p-4 shadow-sm ring-1 ring-slate-200 sm:flex-row" x-data="{ rejecting: false }">
     @if ($image)
@@ -8,8 +8,9 @@
         <div class="font-semibold">{{ $title }}</div>
         <div class="text-sm text-slate-500">{{ $subtitle }}</div>
         <div class="mt-3 flex flex-wrap items-center gap-2">
-            <form method="POST" action="{{ $approve }}" x-data="{ busy: false }" @submit="busy = true">
+            <form method="POST" action="{{ $approve }}" class="flex items-center gap-2" x-data="{ busy: false }" @submit="busy = true">
                 @csrf
+                {{ $fields }}
                 <button :disabled="busy" class="rounded-full bg-emerald-600 px-4 py-1.5 text-sm font-semibold text-white hover:bg-emerald-700 disabled:opacity-50">✓ Setuju</button>
             </form>
             <button type="button" @click="rejecting = !rejecting" class="rounded-full bg-rose-50 px-4 py-1.5 text-sm font-semibold text-rose-700 hover:bg-rose-100">✗ Tolak</button>

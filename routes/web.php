@@ -26,6 +26,8 @@ Route::middleware('role:parent')->prefix('orangtua')->group(function () {
     Route::get('riwayat', Parents\HistoryController::class)->name('parent.history');
     Route::post('periksa/submission/{submission}/setuju', [Parents\ReviewController::class, 'approveSubmission'])->name('parent.submissions.approve');
     Route::post('periksa/submission/{submission}/tolak', [Parents\ReviewController::class, 'rejectSubmission'])->name('parent.submissions.reject');
+    Route::post('periksa/nilai/{exam}/setuju', [Parents\ReviewController::class, 'approveExam'])->name('parent.exams.approve');
+    Route::post('periksa/nilai/{exam}/tolak', [Parents\ReviewController::class, 'rejectExam'])->name('parent.exams.reject');
     Route::post('periksa/klaim/{redemption}/setuju', [Parents\ReviewController::class, 'approveRedemption'])->name('parent.redemptions.approve');
     Route::post('periksa/klaim/{redemption}/tolak', [Parents\ReviewController::class, 'rejectRedemption'])->name('parent.redemptions.reject');
     Route::post('poin/{child}/sesuaikan', [Parents\PointsController::class, 'adjust'])->name('parent.points.adjust');
