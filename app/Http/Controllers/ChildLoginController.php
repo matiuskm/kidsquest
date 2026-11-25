@@ -11,7 +11,7 @@ class ChildLoginController extends Controller
     public function pick()
     {
         if ($user = auth()->user()) {
-            return redirect()->route($user->isParent() ? 'parent.dashboard' : 'child.missions');
+            return redirect()->route($user->homeRoute());
         }
 
         return view('auth.child-pick', ['children' => User::children()->orderBy('name')->get()]);

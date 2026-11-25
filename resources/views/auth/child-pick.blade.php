@@ -32,6 +32,6 @@
         </div>
     </form>
 
-    <p class="mt-8 text-center text-base"><a href="{{ route('login') }}" class="underline">Masuk sebagai orang tua</a></p>
+    <p class="mt-8 text-center text-base"><a href="{{ route('home') }}" class="underline">← Beranda</a> · <a href="{{ route('login') }}" class="underline">Masuk sebagai orang tua</a></p>
 </div>
 @endsection

@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Child;
 use App\Http\Controllers\ChildLoginController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Parents;
 use App\Http\Controllers\PhotoController;
 use App\Http\Controllers\PushSubscriptionController;
@@ -12,7 +13,8 @@ use Illuminate\Support\Facades\Route;
 
 Route::bind('child', fn ($id) => User::children()->findOrFail($id));
 
-Route::get('/', [ChildLoginController::class, 'pick'])->name('child.pick');
+Route::get('/', HomeController::class)->name('home');
+Route::get('/masuk-anak', [ChildLoginController::class, 'pick'])->name('child.pick');
 Route::post('/masuk-anak', [ChildLoginController::class, 'store'])->name('child.pin');
 
 Route::get('/masuk', [AuthController::class, 'create'])->name('login');

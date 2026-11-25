@@ -166,6 +166,7 @@ class ChildManagementTest extends TestCase
         $this->assertSame(ReviewStatus::Rejected, Redemption::sole()->status);
         $this->assertSame(3, PointTransaction::where('user_id', $child->id)->count());
         $this->assertSame(100, $ledger->balance($child));
-        $this->get('/')->assertDontSee($child->name);
+        $this->post(route('logout'));
+        $this->get(route('child.pick'))->assertDontSee($child->name);
     }
 }
