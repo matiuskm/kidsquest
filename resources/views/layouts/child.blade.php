@@ -17,6 +17,7 @@
         <nav class="fixed inset-x-0 bottom-0 border-t-4 border-white bg-white/90 backdrop-blur">
             <div class="mx-auto flex max-w-xl items-center justify-around py-2 text-lg">
                 <a href="{{ route('child.missions') }}" class="rounded-2xl px-4 py-2 hover:bg-yellow-100">🎯 Misi</a>
+                <a href="{{ route('child.rewards') }}" class="rounded-2xl px-4 py-2 hover:bg-yellow-100">🎁 Hadiah</a>
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
                     <button class="rounded-2xl px-4 py-2 hover:bg-pink-100">👋 Ganti anak / Keluar</button>
