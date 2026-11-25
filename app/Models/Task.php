@@ -28,6 +28,11 @@ class Task extends Model
         ];
     }
 
+    public function submissions(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Submission::class);
+    }
+
     public function children(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'task_child', 'task_id', 'user_id');

@@ -26,6 +26,21 @@ class TaskRequest extends FormRequest
         ];
     }
 
+    /** Tugas yang sudah punya kiriman tidak boleh pindah jadwal: kunci periodenya (mis. tugas sekali) bisa bergeser dan poin cair dua kali. */
+    public function after(): array
+    {
+        return [function ($validator) {
+            $task = $this->route('task');
+
+            if (! $task?->exists || ! $task->submissions()->exists()) {
+                return;
+            }
+
+            $task->recurrence->value !== $this->input('recurrence') && $validator->errors()->add('recurrence', 'Jadwal tidak bisa diubah karena tugas ini sudah pernah dikerjakan. Buat tugas baru.');
+            $task->start_date->toDateString() !== $this->input('start_date') && $validator->errors()->add('start_date', 'Tanggal mulai tidak bisa diubah karena tugas ini sudah pernah dikerjakan.');
+        }];
+    }
+
     /** Atribut tabel `tasks`, dengan kolom yang tak relevan untuk recurrence-nya dikosongkan. */
     public function taskData(): array
     {

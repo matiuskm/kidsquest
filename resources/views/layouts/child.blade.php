@@ -12,10 +12,11 @@
             <div class="mb-4 rounded-3xl bg-pink-300 p-5 text-center text-2xl font-extrabold">🎂 Selamat ulang tahun, {{ session('birthday') }}! 🎉<br>Bonus ⭐ {{ config('kidsquest.birthday_bonus') }} poin untukmu!</div>
         @endif
         @auth
-            <div x-data x-init="$store.fx.watch('points-{{ auth()->id() }}', {{ auth()->user()->points }}, 'points', true)"></div>
+            @php $points = auth()->user()->points; @endphp
+            <div x-data x-init="$store.fx.watch('points-{{ auth()->id() }}', {{ $points }}, 'points', true)"></div>
             <div class="mb-4 flex items-center justify-between">
                 <span>{{ auth()->user()->avatar }} {{ auth()->user()->name }}</span>
-                <span class="rounded-full bg-yellow-300 px-4 py-1">⭐ {{ auth()->user()->points }} poin</span>
+                <span class="rounded-full bg-yellow-300 px-4 py-1">⭐ {{ $points }} poin</span>
             </div>
         @endauth
         @yield('content')

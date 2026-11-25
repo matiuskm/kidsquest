@@ -46,7 +46,7 @@
         @foreach ($exams as $e)
             <x-review-item
                 :title="'📝 '.$e->subject.' · nilai '.$e->mark()"
-                :subtitle="$e->child->name.' · '.$e->created_at->format('d/m/Y')"
+                :subtitle="$e->child->name.' · '.$e->created_at->format('d/m/Y').(($last = $e->lastApproved()) ? ' · Terakhir disetujui: '.$last->mark().' ('.$last->reviewed_at->format('d/m').')' : '')"
                 :image="route('photos.exam', $e)"
                 :approve="route('parent.exams.approve', $e)"
                 :reject="route('parent.exams.reject', $e)">

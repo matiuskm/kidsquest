@@ -36,6 +36,24 @@ class ParentTaskTest extends TestCase
         ], $overrides);
     }
 
+    public function test_start_date_and_recurrence_are_locked_once_task_has_submissions(): void
+    {
+        $task = Task::factory()->create(['recurrence' => 'once', 'start_date' => '2026-11-25']);
+        $task->children()->attach($this->child);
+        \App\Models\Submission::factory()->create(['task_id' => $task->id, 'child_id' => $this->child->id]);
+        $this->actingAs($this->parent);
+
+        $this->put(route('parent.tasks.update', $task), $this->payload(['recurrence' => 'once', 'start_date' => '2026-11-26']))
+            ->assertSessionHasErrors('start_date');
+        $this->put(route('parent.tasks.update', $task), $this->payload(['recurrence' => 'daily', 'start_date' => '2026-11-25']))
+            ->assertSessionHasErrors('recurrence');
+        $this->put(route('parent.tasks.update', $task), $this->payload(['recurrence' => 'once', 'start_date' => '2026-11-25', 'title' => 'Judul baru']))
+            ->assertSessionHasNoErrors();
+
+        $this->assertSame('Judul baru', $task->fresh()->title);
+        $this->assertSame('2026-11-25', $task->fresh()->start_date->toDateString());
+    }
+
     public function test_parent_sees_task_list(): void
     {
         Task::factory()->create(['title' => 'Sikat gigi']);
