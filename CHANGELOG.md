@@ -3,6 +3,9 @@
 Format mengikuti [Keep a Changelog](https://keepachangelog.com/), versi mengikuti [SemVer](https://semver.org/).
 
 ## [Unreleased]
+
+## [1.0.0] - 2026-11-25
+Rilis pertama yang live di https://kidsquest.zarvenio.id.
 ### Added
 - PWA (manifest, service worker, ikon), notifikasi Web Push (parent: kiriman dan klaim; anak: keputusan), suara (poin masuk, klaim, ditolak, kirim), konfeti dan animasi kartu.
 - Pengaman test (menolak database selain `kidsquest_test`), konfigurasi nginx dan dokumen deploy.
