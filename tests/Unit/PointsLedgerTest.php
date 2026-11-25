@@ -25,6 +25,17 @@ class PointsLedgerTest extends TestCase
         $this->child = User::factory()->child()->create();
     }
 
+    public function test_exam_writes_positive_exam_row_and_rejects_zero(): void
+    {
+        $tx = $this->ledger->exam($this->child, 4, $this->child);
+
+        $this->assertSame(LedgerType::Exam, $tx->type);
+        $this->assertSame(4, $this->ledger->balance($this->child));
+
+        $this->expectException(\InvalidArgumentException::class);
+        $this->ledger->exam($this->child, 0, $this->child);
+    }
+
     public function test_balance_is_sum_of_ledger(): void
     {
         $this->ledger->earn($this->child, 30, $this->child);

@@ -9,4 +9,5 @@ enum LedgerType: string
     case Refund = 'refund';
     case Adjust = 'adjust';
     case Birthday = 'birthday';
+    case Exam = 'exam';
 }
