@@ -23,16 +23,20 @@
     </main>
 
     @auth
-        <nav class="fixed inset-x-0 bottom-0 border-t-4 border-white bg-white/90 backdrop-blur">
-            <div class="mx-auto flex max-w-xl items-center justify-around py-2 text-lg">
-                <a href="{{ route('child.missions') }}" class="rounded-2xl px-4 py-2 hover:bg-yellow-100">🎯 Misi</a>
-                <a href="{{ route('child.exams') }}" class="rounded-2xl px-4 py-2 hover:bg-yellow-100">📝 Nilai</a>
-                <a href="{{ route('child.rewards') }}" class="rounded-2xl px-4 py-2 hover:bg-yellow-100">🎁 Hadiah</a>
-                <a href="{{ route('child.profile') }}" class="rounded-2xl px-4 py-2 hover:bg-yellow-100">🙂 Saya</a>
-                <form method="POST" action="{{ route('logout') }}" x-data="logoutForm" @submit.prevent="submit($event)">
+        <nav class="fixed inset-x-0 bottom-0 border-t-4 border-white bg-white/95 backdrop-blur">
+            @php
+                $tabs = [['child.missions', '🎯', 'Misi'], ['child.exams', '📝', 'Nilai'], ['child.rewards', '🎁', 'Hadiah'], ['child.profile', '🙂', 'Saya']];
+                $tab = 'flex flex-1 flex-col items-center rounded-2xl px-1 py-1 text-sm leading-tight';
+            @endphp
+            <div class="mx-auto flex max-w-xl items-stretch gap-1 px-1 py-1">
+                @foreach ($tabs as [$route, $icon, $label])
+                    <a href="{{ route($route) }}" @if (request()->routeIs($route)) aria-current="page" @endif
+                        class="{{ $tab }} {{ request()->routeIs($route) ? 'bg-yellow-200' : 'hover:bg-yellow-100' }}"><span class="text-2xl">{{ $icon }}</span>{{ $label }}</a>
+                @endforeach
+                <form method="POST" action="{{ route('logout') }}" x-data="logoutForm" @submit.prevent="submit($event)" class="flex flex-1">
                     @csrf
                     <input type="hidden" name="push_endpoint">
-                    <button class="rounded-2xl px-4 py-2 hover:bg-pink-100">👋 Ganti anak / Keluar</button>
+                    <button class="{{ $tab }} w-full hover:bg-pink-100"><span class="text-2xl">🚪</span>Keluar</button>
                 </form>
             </div>
         </nav>

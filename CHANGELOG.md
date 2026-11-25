@@ -4,6 +4,8 @@ Format mengikuti [Keep a Changelog](https://keepachangelog.com/), versi mengikut
 
 ## [Unreleased]
 ### Changed
+- Menu bawah anak dirapikan: ikon di atas teks pendek (Misi, Nilai, Hadiah, Saya, Keluar), tab aktif ditandai.
+### Changed
 - Parent otomatis keluar bila diam 2 jam (sesi anak tetap 30 hari). Tugas yang sudah pernah dikerjakan tidak bisa diubah jadwal/tanggal mulainya. Kartu periksa ulangan menampilkan nilai terakhir yang disetujui untuk pelajaran yang sama.
 - Dua folder: produksi (`/var/www/kidsquest`, selalu `main`) dan kerja (`/var/www/kidsquest-dev`), skrip `deploy/deploy.sh`; backup harian database dan foto (`deploy/backup.sh`).
 - Hapus halaman welcome bawaan, `laravel/tinker` pindah ke dev, cache service worker v2, poin dibaca sekali per halaman anak, test tidak menulis ke log produksi.
