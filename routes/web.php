@@ -43,6 +43,8 @@ Route::middleware(['role:child', AwardBirthdayBonus::class])->group(function () 
     Route::put('/saya', [Child\ProfileController::class, 'update'])->name('child.profile.update');
     Route::get('/hadiah', [Child\RewardController::class, 'index'])->name('child.rewards');
     Route::post('/hadiah/{reward}', [Child\RewardController::class, 'claim'])->name('child.claim');
+    Route::get('/nilai', [Child\ExamController::class, 'index'])->name('child.exams');
+    Route::post('/nilai', [Child\ExamController::class, 'store'])->name('child.exams.store');
     Route::post('/misi/{task}', [Child\MissionController::class, 'store'])->name('child.submit');
 });
 
@@ -52,3 +54,4 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::get('/foto/{submission}', PhotoController::class)->middleware('auth')->name('photos.show');
+Route::get('/foto-ulangan/{exam}', [PhotoController::class, 'exam'])->middleware('auth')->name('photos.exam');
