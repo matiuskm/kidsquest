@@ -4,12 +4,17 @@ namespace App\Models;
 
 use App\Enums\ReviewStatus;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Database\Factories\SubmissionFactory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 #[Fillable(['task_id', 'child_id', 'period_date', 'photo_path', 'status', 'reject_note', 'reviewed_at'])]
 class Submission extends Model
 {
+    /** @use HasFactory<SubmissionFactory> */
+    use HasFactory;
+
     protected function casts(): array
     {
         return [

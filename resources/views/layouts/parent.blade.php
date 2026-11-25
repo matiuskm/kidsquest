@@ -9,6 +9,7 @@
             @auth
                 <nav class="flex gap-4 text-sm">
                     <a href="{{ route('parent.tasks.index') }}">Tugas</a>
+                    <a href="{{ route('parent.history') }}">Riwayat</a>
                 </nav>
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
