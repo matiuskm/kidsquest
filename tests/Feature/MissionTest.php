@@ -104,6 +104,18 @@ class MissionTest extends TestCase
         $this->assertCount(1, Storage::disk('local')->allFiles());
     }
 
+    public function test_approved_mission_cannot_be_redone_by_child(): void
+    {
+        $this->submit();
+        $submission = Submission::firstOrFail();
+        $submission->update(['status' => ReviewStatus::Approved]);
+
+        $this->submit()->assertSessionHasErrors('photo');
+
+        $this->assertSame(1, Submission::count());
+        $this->assertSame(ReviewStatus::Approved, $submission->fresh()->status);
+    }
+
     public function test_resubmit_after_rejection_is_allowed(): void
     {
         $this->submit();

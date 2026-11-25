@@ -26,6 +26,13 @@ class ExamResult extends Model
         return $this->belongsTo(User::class, 'child_id')->withTrashed();
     }
 
+    /** Ulangan terakhir yang disetujui untuk anak dan mata pelajaran yang sama (petunjuk bagi parent agar tidak menyetujui kertas yang sama dua kali). */
+    public function lastApproved(): ?self
+    {
+        return static::where(['child_id' => $this->child_id, 'subject' => $this->subject, 'status' => ReviewStatus::Approved])
+            ->latest('reviewed_at')->first();
+    }
+
     public function isLetter(): bool
     {
         return $this->claimed_letter !== null;

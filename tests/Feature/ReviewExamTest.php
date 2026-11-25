@@ -159,6 +159,13 @@ class ReviewExamTest extends TestCase
         $this->assertSame(ReviewStatus::Pending, $this->exam->refresh()->status);
     }
 
+    public function test_review_card_shows_last_approved_exam_of_same_subject(): void
+    {
+        ExamResult::factory()->create(['child_id' => $this->child->id, 'subject' => 'IPA', 'claimed_score' => 88, 'final_score' => 88, 'status' => ReviewStatus::Approved, 'reviewed_at' => '2026-11-20 10:00:00']);
+
+        $this->actingAs($this->parent)->get(route('parent.dashboard'))->assertSee('Terakhir disetujui: 88 (20/11)');
+    }
+
     public function test_dashboard_queue_and_history_show_exams(): void
     {
         $this->actingAs($this->parent)->get(route('parent.dashboard'))

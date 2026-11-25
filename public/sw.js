@@ -1,5 +1,5 @@
 // KidsQuest service worker: cache aset statis, tampilkan push, buka halaman saat notifikasi diklik.
-const CACHE = 'kq-static-v1';
+const CACHE = 'kq-static-v2';
 const STATIC = /^\/(build|icons|sounds)\//;
 
 self.addEventListener('install', () => self.skipWaiting());
