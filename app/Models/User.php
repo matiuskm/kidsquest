@@ -2,31 +2,43 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Enums\Role;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
 
-#[Fillable(['name', 'email', 'password'])]
-#[Hidden(['password', 'remember_token'])]
+#[Fillable(['name', 'email', 'password', 'role', 'avatar', 'pin_hash', 'birthday_month', 'birthday_day'])]
+#[Hidden(['password', 'remember_token', 'pin_hash'])]
 class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */
-    use HasFactory, Notifiable;
+    use HasFactory, SoftDeletes;
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
     protected function casts(): array
     {
         return [
-            'email_verified_at' => 'datetime',
+            'role' => Role::class,
             'password' => 'hashed',
+            'pin_hash' => 'hashed',
         ];
+    }
+
+    public function isParent(): bool
+    {
+        return $this->role === Role::Parent;
+    }
+
+    public function isChild(): bool
+    {
+        return $this->role === Role::Child;
+    }
+
+    public function scopeChildren(Builder $query): void
+    {
+        $query->where('role', Role::Child);
     }
 }
