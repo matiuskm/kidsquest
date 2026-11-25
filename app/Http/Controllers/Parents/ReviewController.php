@@ -19,44 +19,44 @@ class ReviewController extends Controller
 {
     public function approveSubmission(Submission $submission, ReviewService $reviews)
     {
-        return $this->decide(fn () => $reviews->approveSubmission($submission), 'Disetujui, poin masuk ✅');
+        return $this->decide(fn () => $reviews->approveSubmission($submission), __('Disetujui, poin masuk ✅'));
     }
 
     public function rejectSubmission(Request $request, Submission $submission, ReviewService $reviews)
     {
-        return $this->decide(fn () => $reviews->rejectSubmission($submission, $this->note($request)), 'Ditolak, anak bisa kirim ulang.');
+        return $this->decide(fn () => $reviews->rejectSubmission($submission, $this->note($request)), __('Ditolak, anak bisa kirim ulang.'));
     }
 
     public function undoSubmission(Submission $submission, ReviewService $reviews)
     {
-        return $this->decide(fn () => $reviews->undoSubmission($submission), 'Persetujuan dibatalkan, poin ditarik.');
+        return $this->decide(fn () => $reviews->undoSubmission($submission), __('Persetujuan dibatalkan, poin ditarik.'));
     }
 
     public function undoExam(ExamResult $exam, ReviewService $reviews)
     {
-        return $this->decide(fn () => $reviews->undoExam($exam), 'Persetujuan dibatalkan, poin ditarik.');
+        return $this->decide(fn () => $reviews->undoExam($exam), __('Persetujuan dibatalkan, poin ditarik.'));
     }
 
     public function approveExam(Request $request, ExamResult $exam, ReviewService $reviews)
     {
         $data = $request->validate(['score' => ['nullable', 'integer', 'between:0,100'], 'letter' => ['nullable', Rule::in(ExamGrade::LETTERS)]]);
 
-        return $this->decide(fn () => $reviews->approveExam($exam, isset($data['score']) ? (int) $data['score'] : null, $data['letter'] ?? null), 'Nilai disetujui ✅');
+        return $this->decide(fn () => $reviews->approveExam($exam, isset($data['score']) ? (int) $data['score'] : null, $data['letter'] ?? null), __('Nilai disetujui ✅'));
     }
 
     public function rejectExam(Request $request, ExamResult $exam, ReviewService $reviews)
     {
-        return $this->decide(fn () => $reviews->rejectExam($exam, $this->note($request)), 'Ditolak, anak bisa kirim ulang.');
+        return $this->decide(fn () => $reviews->rejectExam($exam, $this->note($request)), __('Ditolak, anak bisa kirim ulang.'));
     }
 
     public function approveRedemption(Redemption $redemption, ReviewService $reviews)
     {
-        return $this->decide(fn () => $reviews->approveRedemption($redemption), 'Klaim hadiah disetujui 🎁');
+        return $this->decide(fn () => $reviews->approveRedemption($redemption), __('Klaim hadiah disetujui 🎁'));
     }
 
     public function rejectRedemption(Request $request, Redemption $redemption, ReviewService $reviews)
     {
-        return $this->decide(fn () => $reviews->rejectRedemption($redemption, $this->note($request)), 'Klaim ditolak, poin dikembalikan.');
+        return $this->decide(fn () => $reviews->rejectRedemption($redemption, $this->note($request)), __('Klaim ditolak, poin dikembalikan.'));
     }
 
     protected function note(Request $request): ?string

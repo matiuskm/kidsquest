@@ -25,9 +25,9 @@ class RewardController extends Controller
         try {
             $rewards->claim(auth()->user(), $reward);
         } catch (InsufficientPoints|RewardUnavailable|DuplicateClaim $e) {
-            return back()->withErrors(['reward' => $e instanceof InsufficientPoints ? 'Poinmu belum cukup. Semangat! 💪' : $e->getMessage()])->with('sound', 'reject');
+            return back()->withErrors(['reward' => $e instanceof InsufficientPoints ? __('Poinmu belum cukup. Semangat! 💪') : $e->getMessage()])->with('sound', 'reject');
         }
 
-        return redirect()->route('child.rewards')->with('status', 'Klaim terkirim! Tunggu ortu setuju ya 🎁')->with('sound', 'redeem');
+        return redirect()->route('child.rewards')->with('status', __('Klaim terkirim! Tunggu ortu setuju ya 🎁'))->with('sound', 'redeem');
     }
 }

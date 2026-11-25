@@ -12,10 +12,10 @@ final class Labels
     public static function recurrence(Task $task): string
     {
         return match ($task->recurrence) {
-            Recurrence::Once => 'Sekali',
-            Recurrence::Daily => 'Setiap hari',
-            Recurrence::Weekly => 'Tiap '.collect($task->weekdays)->map(fn ($d) => self::WEEKDAYS[$d])->join(', '),
-            Recurrence::Monthly => "Tiap tanggal {$task->month_day}",
+            Recurrence::Once => __('Sekali'),
+            Recurrence::Daily => __('Setiap hari'),
+            Recurrence::Weekly => __('Tiap').' '.collect($task->weekdays)->map(fn ($d) => __(self::WEEKDAYS[$d]))->join(', '),
+            Recurrence::Monthly => __('Tiap tanggal :n', ['n' => $task->month_day]),
         };
     }
 }

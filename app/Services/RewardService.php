@@ -45,8 +45,9 @@ final class RewardService
 
             DB::afterCommit(fn () => $this->notifier->toParent(
                 'Klaim hadiah 🎁',
-                "{$child->name} ingin menukar “{$reward->name}”.",
+                ':name ingin menukar “:reward”.',
                 route('parent.dashboard', absolute: false),
+                ['name' => $child->name, 'reward' => $reward->name],
             ));
 
             return $redemption;

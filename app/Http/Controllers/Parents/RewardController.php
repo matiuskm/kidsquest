@@ -22,7 +22,7 @@ class RewardController extends Controller
     {
         Reward::create($request->rewardData());
 
-        return redirect()->route('parent.rewards.index')->with('status', 'Hadiah ditambahkan.');
+        return redirect()->route('parent.rewards.index')->with('status', __('Hadiah ditambahkan.'));
     }
 
     public function edit(Reward $reward)
@@ -34,13 +34,13 @@ class RewardController extends Controller
     {
         $reward->update($request->rewardData());
 
-        return redirect()->route('parent.rewards.index')->with('status', 'Hadiah disimpan.');
+        return redirect()->route('parent.rewards.index')->with('status', __('Hadiah disimpan.'));
     }
 
     public function destroy(Reward $reward)
     {
         $reward->delete();
 
-        return redirect()->route('parent.rewards.index')->with('status', 'Hadiah dihapus.');
+        return redirect()->route('parent.rewards.index')->with('status', __('Hadiah dihapus.'));
     }
 }

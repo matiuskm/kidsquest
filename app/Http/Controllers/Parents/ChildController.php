@@ -25,7 +25,7 @@ class ChildController extends Controller
     {
         User::create([...$request->childData(), 'role' => Role::Child, 'pin_hash' => $request->validated('pin')]);
 
-        return redirect()->route('parent.children.index')->with('status', 'Anak ditambahkan.');
+        return redirect()->route('parent.children.index')->with('status', __('Anak ditambahkan.'));
     }
 
     public function edit(User $child)
@@ -42,20 +42,20 @@ class ChildController extends Controller
         $child->update($pin ? [...$data, 'pin_hash' => $pin] : $data);
         $pin && ChildLoginRequest::clearLockout($child->id);
 
-        return redirect()->route('parent.children.index')->with('status', 'Data anak disimpan.');
+        return redirect()->route('parent.children.index')->with('status', __('Data anak disimpan.'));
     }
 
     public function destroy(User $child, ChildService $children)
     {
         $children->remove($child);
 
-        return redirect()->route('parent.children.index')->with('status', 'Anak dihapus.');
+        return redirect()->route('parent.children.index')->with('status', __('Anak dihapus.'));
     }
 
     public function toggleChat(User $child)
     {
         $child->update(['peer_chat' => ! $child->peer_chat]);
 
-        return back()->with('status', 'Chat antar anak '.($child->peer_chat ? 'diaktifkan' : 'dimatikan').' untuk '.$child->name.'.');
+        return back()->with('status', __($child->peer_chat ? 'Chat antar anak diaktifkan untuk :name.' : 'Chat antar anak dimatikan untuk :name.', ['name' => $child->name]));
     }
 }

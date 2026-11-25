@@ -22,6 +22,6 @@ class ProfileController extends Controller
 
         $request->user()->update($data);
 
-        return redirect()->route('child.profile')->with('status', 'Profil disimpan ✨');
+        return redirect()->route('child.profile')->with('status', __('Profil disimpan ✨'));
     }
 }

@@ -5,6 +5,7 @@ use App\Http\Controllers\ChatController;
 use App\Http\Controllers\Child;
 use App\Http\Controllers\ChildLoginController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\LocaleController;
 use App\Http\Controllers\Parents;
 use App\Http\Controllers\PhotoController;
 use App\Http\Controllers\PushSubscriptionController;
@@ -63,6 +64,7 @@ Route::middleware(['auth', ParentIdleTimeout::class])->prefix('chat')->group(fun
 });
 
 Route::middleware('auth')->group(function () {
+    Route::post('/bahasa', LocaleController::class)->name('locale.update');
     Route::post('/push/subscribe', [PushSubscriptionController::class, 'store'])->name('push.subscribe');
     Route::delete('/push/subscribe', [PushSubscriptionController::class, 'destroy'])->name('push.unsubscribe');
 });

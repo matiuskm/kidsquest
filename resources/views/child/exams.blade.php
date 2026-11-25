@@ -1,9 +1,9 @@
 @extends('layouts.child')
 
-@section('title', 'Nilai')
+@section('title', __('Nilai'))
 
 @section('content')
-    <h1 class="mb-4 text-4xl font-extrabold">Nilai ulangan 📝</h1>
+    <h1 class="mb-4 text-4xl font-extrabold">{{ __('Nilai ulangan 📝') }}</h1>
 
     @if (session('status'))
         <div class="mb-4 rounded-2xl bg-emerald-200 p-4">{{ session('status') }}</div>
@@ -15,13 +15,13 @@
     <form method="POST" action="{{ route('child.exams.store') }}" enctype="multipart/form-data"
         x-data="photoUpload" @submit="busy = true" class="kq-pop mb-6 space-y-3 rounded-3xl bg-white p-5 shadow-lg">
         @csrf
-        <input name="subject" value="{{ old('subject') }}" maxlength="60" required placeholder="Mata pelajaran" class="w-full rounded-2xl border-2 border-sky-200 px-4 py-3">
+        <input name="subject" value="{{ old('subject') }}" maxlength="60" required placeholder="{{ __('Mata pelajaran') }}" class="w-full rounded-2xl border-2 border-sky-200 px-4 py-3">
         <div x-data="{ letter: {{ old('letter') ? 'true' : 'false' }} }" class="space-y-3">
             <div class="flex gap-2 text-base">
-                <button type="button" @click="letter = false" :class="letter ? 'bg-sky-100' : 'bg-sky-400 text-white'" class="flex-1 rounded-2xl py-2">🔢 Angka</button>
-                <button type="button" @click="letter = true" :class="letter ? 'bg-sky-400 text-white' : 'bg-sky-100'" class="flex-1 rounded-2xl py-2">🔤 Huruf</button>
+                <button type="button" @click="letter = false" :class="letter ? 'bg-sky-100' : 'bg-sky-400 text-white'" class="flex-1 rounded-2xl py-2">{{ __('🔢 Angka') }}</button>
+                <button type="button" @click="letter = true" :class="letter ? 'bg-sky-400 text-white' : 'bg-sky-100'" class="flex-1 rounded-2xl py-2">{{ __('🔤 Huruf') }}</button>
             </div>
-            <input x-show="!letter" :disabled="letter" name="score" value="{{ old('score') }}" type="number" inputmode="numeric" min="0" max="100" required placeholder="Nilai (0-100)" class="w-full rounded-2xl border-2 border-sky-200 px-4 py-3">
+            <input x-show="!letter" :disabled="letter" name="score" value="{{ old('score') }}" type="number" inputmode="numeric" min="0" max="100" required placeholder="{{ __('Nilai (0-100)') }}" class="w-full rounded-2xl border-2 border-sky-200 px-4 py-3">
             <select x-show="letter" x-cloak :disabled="!letter" name="letter" required class="w-full rounded-2xl border-2 border-sky-200 px-4 py-3">
                 @foreach (\App\Support\ExamGrade::LETTERS as $l)
                     <option value="{{ $l }}" @selected(old('letter') === $l)>{{ $l }}</option>
@@ -29,12 +29,12 @@
             </select>
         </div>
         <label class="block cursor-pointer rounded-2xl border-4 border-dashed border-sky-300 p-4 text-center">
-            <span x-show="!preview">📷 Foto kertas ulangan</span>
+            <span x-show="!preview">{{ __('📷 Foto kertas ulangan') }}</span>
             <img x-show="preview" :src="preview" class="mx-auto max-h-48 rounded-xl" alt="">
             <input type="file" name="photo" accept="image/*" capture="environment" class="sr-only" required @change="shrink($event)">
         </label>
         <p x-show="error" x-text="error" x-cloak class="text-center text-base text-rose-700"></p>
-        <button :disabled="busy || working || error" class="w-full rounded-2xl bg-pink-400 py-3 text-white disabled:opacity-50">Kirim 🚀</button>
+        <button :disabled="busy || working || error" class="w-full rounded-2xl bg-pink-400 py-3 text-white disabled:opacity-50">{{ __('Kirim 🚀') }}</button>
     </form>
 
     <div class="space-y-3">
@@ -51,15 +51,15 @@
                     @endif
                 </div>
                 <p class="text-base">
-                    Nilai {{ $exam->mark() }} ·
-                    {{ $done ? '✅ Disetujui' : ($rejected ? '🔁 Ditolak, kirim ulang ya' : '⏳ Menunggu ortu') }}
+                    {{ __('Nilai') }} {{ $exam->mark() }} ·
+                    {{ $done ? __('✅ Disetujui') : ($rejected ? __('🔁 Ditolak, kirim ulang ya') : __('⏳ Menunggu ortu')) }}
                 </p>
                 @if ($rejected && $exam->reject_note)
-                    <p class="text-base text-rose-700">Kata ortu: {{ $exam->reject_note }}</p>
+                    <p class="text-base text-rose-700">{{ __('Kata ortu:') }} {{ $exam->reject_note }}</p>
                 @endif
             </article>
         @empty
-            <p class="rounded-3xl bg-white p-6 text-center">Belum ada nilai. Habis ulangan, kirim di sini ya! 🌟</p>
+            <p class="rounded-3xl bg-white p-6 text-center">{{ __('Belum ada nilai. Habis ulangan, kirim di sini ya! 🌟') }}</p>
         @endforelse
     </div>
 @endsection

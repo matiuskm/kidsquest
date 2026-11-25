@@ -6,8 +6,8 @@ use RuntimeException;
 
 class InsufficientPoints extends RuntimeException
 {
-    public function __construct(string $message = 'Poin tidak cukup.')
+    public function __construct(?string $message = null)
     {
-        parent::__construct($message);
+        parent::__construct($message ?? __('Poin tidak cukup.'));
     }
 }

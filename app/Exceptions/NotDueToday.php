@@ -6,8 +6,8 @@ use RuntimeException;
 
 class NotDueToday extends RuntimeException
 {
-    public function __construct(string $message = 'Misi ini tidak ada untuk hari ini.')
+    public function __construct(?string $message = null)
     {
-        parent::__construct($message);
+        parent::__construct($message ?? __('Misi ini tidak ada untuk hari ini.'));
     }
 }

@@ -23,7 +23,7 @@ class TaskController extends Controller
     {
         Task::create($request->taskData())->children()->sync($request->childIds());
 
-        return redirect()->route('parent.tasks.index')->with('status', 'Tugas ditambahkan.');
+        return redirect()->route('parent.tasks.index')->with('status', __('Tugas ditambahkan.'));
     }
 
     public function edit(Task $task)
@@ -36,14 +36,14 @@ class TaskController extends Controller
         $task->update($request->taskData());
         $task->children()->sync($request->childIds());
 
-        return redirect()->route('parent.tasks.index')->with('status', 'Tugas disimpan.');
+        return redirect()->route('parent.tasks.index')->with('status', __('Tugas disimpan.'));
     }
 
     public function destroy(Task $task)
     {
         $task->delete();
 
-        return redirect()->route('parent.tasks.index')->with('status', 'Tugas dihapus.');
+        return redirect()->route('parent.tasks.index')->with('status', __('Tugas dihapus.'));
     }
 
     private function formData(Task $task): array

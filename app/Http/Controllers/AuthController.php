@@ -19,7 +19,7 @@ class AuthController extends Controller
         $credentials = $request->validate(['email' => ['required', 'email'], 'password' => ['required']]);
 
         if (! Auth::attempt([...$credentials, 'role' => Role::Parent->value])) {
-            throw ValidationException::withMessages(['email' => 'Email atau password salah.']);
+            throw ValidationException::withMessages(['email' => __('Email atau password salah.')]);
         }
 
         $request->session()->regenerate();

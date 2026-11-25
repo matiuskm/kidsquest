@@ -47,7 +47,7 @@ class ChildLoginRequest extends FormRequest
         if ($locked) {
             $minutes = (int) ceil(RateLimiter::availableIn($locked) / 60);
 
-            throw ValidationException::withMessages(['pin' => "Terlalu banyak percobaan. Coba lagi dalam {$minutes} menit."]);
+            throw ValidationException::withMessages(['pin' => __('Terlalu banyak percobaan. Coba lagi dalam :n menit.', ['n' => $minutes])]);
         }
 
         $child = User::children()->find($this->integer('child_id'));
@@ -56,7 +56,7 @@ class ChildLoginRequest extends FormRequest
             RateLimiter::hit($key, self::LOCK_SECONDS);
             RateLimiter::hit($dayKey, self::DAILY_SECONDS);
 
-            throw ValidationException::withMessages(['pin' => 'PIN salah, coba lagi ya.']);
+            throw ValidationException::withMessages(['pin' => __('PIN salah, coba lagi ya.')]);
         }
 
         self::clearLockout($id);

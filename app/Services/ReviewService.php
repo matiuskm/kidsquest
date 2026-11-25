@@ -30,7 +30,7 @@ final class ReviewService
 
             $s->update(['status' => ReviewStatus::Approved, 'reviewed_at' => now()]);
             $this->ledger->earn($s->child, $s->task->points, $s);
-            $this->tell($s->child, 'Poin masuk! ⭐', "+{$s->task->points} poin untuk “{$s->task->title}”.", 'child.missions');
+            $this->tell($s->child, 'Poin masuk! ⭐', '+:n poin untuk “:title”.', 'child.missions', ['n' => $s->task->points, 'title' => $s->task->title]);
         });
     }
 
@@ -40,7 +40,7 @@ final class ReviewService
         DB::transaction(function () use ($submission, $note) {
             $s = $this->lockPending($submission);
             $s->update(['status' => ReviewStatus::Rejected, 'reject_note' => $note, 'reviewed_at' => now()]);
-            $this->tell($s->child, 'Coba lagi 🔁', "“{$s->task->title}” ditolak".($note ? ": $note" : '.'), 'child.missions');
+            $this->tell($s->child, 'Coba lagi 🔁', $note ? '“:title” ditolak: :note' : '“:title” ditolak.', 'child.missions', ['title' => $s->task->title, 'note' => $note]);
         });
     }
 
@@ -59,7 +59,7 @@ final class ReviewService
 
             $e->update($final + ['status' => ReviewStatus::Approved, 'points_awarded' => $grade->points, 'reviewed_at' => now()]);
             $grade->points > 0 && $this->ledger->exam($e->child, $grade->points, $e);
-            $this->tell($e->child, 'Nilai disetujui 📝', "{$e->subject}: {$grade->letter}".($grade->points > 0 ? ", +{$grade->points} poin." : '.'), 'child.exams');
+            $this->tell($e->child, 'Nilai disetujui 📝', $grade->points > 0 ? ':subject: :letter, +:n poin.' : ':subject: :letter.', 'child.exams', ['subject' => $e->subject, 'letter' => $grade->letter, 'n' => $grade->points]);
         });
     }
 
@@ -69,7 +69,7 @@ final class ReviewService
         DB::transaction(function () use ($exam, $note) {
             $e = $this->lockPending($exam);
             $e->update(['status' => ReviewStatus::Rejected, 'reject_note' => $note, 'reviewed_at' => now()]);
-            $this->tell($e->child, 'Coba lagi 🔁', "Nilai {$e->subject} ditolak".($note ? ": $note" : '.'), 'child.exams');
+            $this->tell($e->child, 'Coba lagi 🔁', $note ? 'Nilai :subject ditolak: :note' : 'Nilai :subject ditolak.', 'child.exams', ['subject' => $e->subject, 'note' => $note]);
         });
     }
 
@@ -79,7 +79,7 @@ final class ReviewService
         DB::transaction(function () use ($redemption) {
             $r = $this->lockPending($redemption);
             $r->update(['status' => ReviewStatus::Approved, 'reviewed_at' => now()]);
-            $this->tell($r->child, 'Hadiah disetujui 🎁', "“{$r->reward->name}” siap kamu ambil!", 'child.rewards');
+            $this->tell($r->child, 'Hadiah disetujui 🎁', '“:name” siap kamu ambil!', 'child.rewards', ['name' => $r->reward->name]);
         });
     }
 
@@ -90,7 +90,7 @@ final class ReviewService
             $r = $this->lockPending($redemption);
             $r->update(['status' => ReviewStatus::Rejected, 'reject_note' => $note, 'reviewed_at' => now()]);
             $this->ledger->refund($r->child, $r->cost, $r);
-            $this->tell($r->child, 'Klaim ditolak', "Poin {$r->cost} dikembalikan.".($note ? " $note" : ''), 'child.rewards');
+            $this->tell($r->child, 'Klaim ditolak', $note ? 'Poin :n dikembalikan. :note' : 'Poin :n dikembalikan.', 'child.rewards', ['n' => $r->cost, 'note' => $note]);
         });
     }
 
@@ -115,9 +115,9 @@ final class ReviewService
     }
 
     /** Push dikirim setelah transaksi berhasil commit. */
-    private function tell(\App\Models\User $child, string $title, string $body, string $route): void
+    private function tell(\App\Models\User $child, string $title, string $body, string $route, array $replace = []): void
     {
-        DB::afterCommit(fn () => $this->notifier->toChild($child, $title, $body, route($route, absolute: false)));
+        DB::afterCommit(fn () => $this->notifier->toChild($child, $title, $body, route($route, absolute: false), $replace));
     }
 
     /** @template T of Model @param T $model @return T */
