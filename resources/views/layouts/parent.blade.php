@@ -22,8 +22,9 @@
                     ['parent.tasks.index', 'Tugas', 'parent.tasks.*'],
                     ['parent.rewards.index', 'Hadiah', 'parent.rewards.*'],
                     ['parent.history', 'Riwayat', 'parent.history'],
+                    ['chat.index', 'Chat', 'chat.*'],
                 ] as [$route, $label, $active])
-                    <a href="{{ route($route) }}" @class(['whitespace-nowrap rounded-full px-4 py-1.5', 'bg-white text-indigo-700 font-semibold' => request()->routeIs($active), 'hover:bg-white/20' => ! request()->routeIs($active)])>{{ $label }}</a>
+                    <a href="{{ route($route) }}" @class(['whitespace-nowrap rounded-full px-4 py-1.5', 'bg-white text-indigo-700 font-semibold' => request()->routeIs($active), 'hover:bg-white/20' => ! request()->routeIs($active)])>{{ $label }}@if ($route === 'chat.index' && auth()->user()->unread_messages > 0) <span data-unread="{{ auth()->user()->unread_messages }}" class="ml-1 rounded-full bg-rose-500 px-1.5 text-xs text-white">{{ auth()->user()->unread_messages }}</span>@endif</a>
                 @endforeach
             </nav>
         @endauth

@@ -14,12 +14,14 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use NotificationChannels\WebPush\HasPushSubscriptions;
 
-#[Fillable(['name', 'email', 'password', 'role', 'avatar', 'pin_hash', 'birthday_month', 'birthday_day'])]
+#[Fillable(['name', 'email', 'password', 'role', 'avatar', 'pin_hash', 'birthday_month', 'birthday_day', 'peer_chat'])]
 #[Hidden(['password', 'remember_token', 'pin_hash'])]
 class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */
     use HasFactory, HasPushSubscriptions, Notifiable, SoftDeletes;
+
+    protected $attributes = ['peer_chat' => true];
 
     protected static function booted(): void
     {
@@ -39,6 +41,7 @@ class User extends Authenticatable
             'role' => Role::class,
             'password' => 'hashed',
             'pin_hash' => 'hashed',
+            'peer_chat' => 'boolean',
         ];
     }
 
@@ -61,6 +64,12 @@ class User extends Authenticatable
     public function getPointsAttribute(): int
     {
         return app(\App\Services\PointsLedger::class)->balance($this);
+    }
+
+    /** Pesan chat yang belum dibaca. */
+    public function getUnreadMessagesAttribute(): int
+    {
+        return Message::where('recipient_id', $this->id)->whereNull('read_at')->count();
     }
 
     /** Halaman utama sesuai peran. */

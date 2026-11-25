@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ChatController;
 use App\Http\Controllers\Child;
 use App\Http\Controllers\ChildLoginController;
 use App\Http\Controllers\HomeController;
@@ -33,6 +34,7 @@ Route::middleware(['role:parent', ParentIdleTimeout::class])->prefix('orangtua')
     Route::post('periksa/nilai/{exam}/tolak', [Parents\ReviewController::class, 'rejectExam'])->name('parent.exams.reject');
     Route::post('periksa/klaim/{redemption}/setuju', [Parents\ReviewController::class, 'approveRedemption'])->name('parent.redemptions.approve');
     Route::post('periksa/klaim/{redemption}/tolak', [Parents\ReviewController::class, 'rejectRedemption'])->name('parent.redemptions.reject');
+    Route::post('anak/{child}/chat', [Parents\ChildController::class, 'toggleChat'])->name('parent.children.chat');
     Route::post('poin/{child}/sesuaikan', [Parents\PointsController::class, 'adjust'])->name('parent.points.adjust');
     Route::resource('anak', Parents\ChildController::class)->except('show')
         ->parameters(['anak' => 'child'])->names('parent.children');
@@ -51,6 +53,13 @@ Route::middleware(['role:child', AwardBirthdayBonus::class])->group(function () 
     Route::get('/nilai', [Child\ExamController::class, 'index'])->name('child.exams');
     Route::post('/nilai', [Child\ExamController::class, 'store'])->name('child.exams.store');
     Route::post('/misi/{task}', [Child\MissionController::class, 'store'])->name('child.submit');
+});
+
+Route::middleware(['auth', ParentIdleTimeout::class])->prefix('chat')->group(function () {
+    Route::get('/', [ChatController::class, 'index'])->name('chat.index');
+    Route::get('{user}', [ChatController::class, 'show'])->name('chat.show');
+    Route::get('{user}/baru', [ChatController::class, 'poll'])->middleware('throttle:60,1')->name('chat.poll');
+    Route::post('{user}', [ChatController::class, 'store'])->middleware('throttle:20,1')->name('chat.store');
 });
 
 Route::middleware('auth')->group(function () {

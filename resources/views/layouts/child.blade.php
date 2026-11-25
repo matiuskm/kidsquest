@@ -25,13 +25,17 @@
     @auth
         <nav class="fixed inset-x-0 bottom-0 border-t-4 border-white bg-white/95 backdrop-blur">
             @php
-                $tabs = [['child.missions', '🎯', 'Misi'], ['child.exams', '📝', 'Nilai'], ['child.rewards', '🎁', 'Hadiah'], ['child.profile', '🙂', 'Saya']];
-                $tab = 'flex flex-1 flex-col items-center rounded-2xl px-1 py-1 text-sm leading-tight';
+                $tabs = [['child.missions', '🎯', 'Misi'], ['child.exams', '📝', 'Nilai'], ['child.rewards', '🎁', 'Hadiah'], ['chat.*', '💬', 'Chat'], ['child.profile', '🙂', 'Saya']];
+                $tab = 'flex flex-1 flex-col items-center rounded-2xl px-1 py-1 text-xs leading-tight';
             @endphp
             <div class="mx-auto flex max-w-xl items-stretch gap-1 px-1 py-1">
                 @foreach ($tabs as [$route, $icon, $label])
-                    <a href="{{ route($route) }}" @if (request()->routeIs($route)) aria-current="page" @endif
-                        class="{{ $tab }} {{ request()->routeIs($route) ? 'bg-yellow-200' : 'hover:bg-yellow-100' }}"><span class="text-2xl">{{ $icon }}</span>{{ $label }}</a>
+                    <a href="{{ route($route === 'chat.*' ? 'chat.index' : $route) }}" @if (request()->routeIs($route)) aria-current="page" @endif
+                        class="relative {{ $tab }} {{ request()->routeIs($route) ? 'bg-yellow-200' : 'hover:bg-yellow-100' }}"><span class="text-2xl">{{ $icon }}</span>{{ $label }}
+                        @if ($route === 'chat.*' && auth()->user()->unread_messages > 0)
+                            <span data-unread="{{ auth()->user()->unread_messages }}" class="absolute right-1 top-0 rounded-full bg-rose-500 px-1.5 text-xs text-white">{{ auth()->user()->unread_messages }}</span>
+                        @endif
+                    </a>
                 @endforeach
                 <form method="POST" action="{{ route('logout') }}" x-data="logoutForm" @submit.prevent="submit($event)" class="flex flex-1">
                     @csrf

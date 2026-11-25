@@ -8,7 +8,7 @@ cd /var/www/kidsquest
 before=$(git rev-parse HEAD)
 git pull --ff-only origin main
 composer install --no-dev -o -q
-git diff --name-only "$before" HEAD | grep -qE '^(resources/(js|css)|package|vite)' && { npm ci --silent && npm run build --silent; }
+git diff --name-only "$before" HEAD | grep -qE '^(resources/(js|css|views)|package|vite)' && { npm ci --silent && npm run build --silent; }
 php artisan migrate --force
 php artisan optimize:clear
 

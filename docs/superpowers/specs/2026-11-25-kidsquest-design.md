@@ -15,7 +15,7 @@ Web app mini (PWA) untuk anak-anak Kris. Setiap hari anak dapat "misi", mengirim
 ## Non-goals
 - Tidak ada registrasi publik; hanya parent yang membuat anak.
 - Tidak ada multi-parent, multi-keluarga, atau multi-tenant.
-- Tidak ada leaderboard antar anak, chat, atau fitur sosial.
+- Tidak ada leaderboard antar anak atau fitur sosial lain. (Chat ditambahkan kemudian: lihat `2026-11-25-chat-design.md`.)
 - Bukan app native; tidak ada iOS push (anak semua Android).
 - Tidak ada fitur offline-first; service worker hanya untuk install, cache aset, dan push.
 

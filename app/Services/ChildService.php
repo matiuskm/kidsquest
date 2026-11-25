@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Enums\ReviewStatus;
 use App\Models\ExamResult;
+use App\Models\Message;
 use App\Models\Redemption;
 use App\Models\Submission;
 use App\Models\User;
@@ -36,6 +37,8 @@ final class ChildService
                 $this->photos->delete($e->photo_path);
                 $e->update(['photo_path' => null]);
             });
+
+            Message::where('sender_id', $child->id)->orWhere('recipient_id', $child->id)->delete();
 
             $child->delete();
         });
