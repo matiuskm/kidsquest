@@ -6,18 +6,26 @@
 @include('parent._status')
 
 <section class="mb-8">
-    <h2 class="mb-2 font-bold">Perlu diperiksa @if ($pending->isNotEmpty())<span class="rounded-full bg-red-600 px-2 text-xs text-white">{{ $pending->count() }}</span>@endif</h2>
+    <h2 class="mb-2 font-bold">Perlu diperiksa @if ($pending->count() + $claims->count() > 0)<span class="rounded-full bg-red-600 px-2 text-xs text-white">{{ $pending->count() + $claims->count() }}</span>@endif</h2>
     <ul class="divide-y rounded-xl bg-white shadow">
-        @forelse ($pending as $s)
+        @foreach ($pending as $s)
             <x-review-item
                 :title="$s->task->title.' · '.$s->task->points.' poin'"
                 :subtitle="$s->child->name.' · '.$s->period_date->format('d/m/Y')"
                 :image="route('photos.show', $s)"
                 :approve="route('parent.submissions.approve', $s)"
                 :reject="route('parent.submissions.reject', $s)" />
-        @empty
+        @endforeach
+        @foreach ($claims as $c)
+            <x-review-item
+                :title="'🎁 '.$c->reward->name.' · '.$c->cost.' poin'"
+                :subtitle="$c->child->name.' ingin menukar'"
+                :approve="route('parent.redemptions.approve', $c)"
+                :reject="route('parent.redemptions.reject', $c)" />
+        @endforeach
+        @if ($pending->isEmpty() && $claims->isEmpty())
             <li class="p-4 text-sm text-slate-500">Tidak ada yang menunggu. 🎉</li>
-        @endforelse
+        @endif
     </ul>
 </section>
 

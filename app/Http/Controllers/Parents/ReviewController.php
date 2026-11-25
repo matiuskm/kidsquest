@@ -6,6 +6,7 @@ use App\Exceptions\AlreadyReviewed;
 use App\Exceptions\InsufficientPoints;
 use App\Exceptions\MissingPhoto;
 use App\Http\Controllers\Controller;
+use App\Models\Redemption;
 use App\Models\Submission;
 use App\Services\ReviewService;
 use Closure;
@@ -21,6 +22,16 @@ class ReviewController extends Controller
     public function rejectSubmission(Request $request, Submission $submission, ReviewService $reviews)
     {
         return $this->decide(fn () => $reviews->rejectSubmission($submission, $this->note($request)), 'Ditolak, anak bisa kirim ulang.');
+    }
+
+    public function approveRedemption(Redemption $redemption, ReviewService $reviews)
+    {
+        return $this->decide(fn () => $reviews->approveRedemption($redemption), 'Klaim hadiah disetujui 🎁');
+    }
+
+    public function rejectRedemption(Request $request, Redemption $redemption, ReviewService $reviews)
+    {
+        return $this->decide(fn () => $reviews->rejectRedemption($redemption, $this->note($request)), 'Klaim ditolak, poin dikembalikan.');
     }
 
     protected function note(Request $request): ?string

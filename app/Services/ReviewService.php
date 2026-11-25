@@ -5,11 +5,13 @@ namespace App\Services;
 use App\Enums\ReviewStatus;
 use App\Exceptions\AlreadyReviewed;
 use App\Exceptions\MissingPhoto;
+use App\Models\Redemption;
 use App\Models\Submission;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
-/** Keputusan parent atas submission (dan klaim hadiah, ditambah di Task 7). Idempotent: hanya dari `pending`. */
+/** Keputusan parent atas submission dan klaim hadiah. Idempotent: hanya dari `pending`. */
 final class ReviewService
 {
     public function __construct(private PointsLedger $ledger) {}
@@ -41,9 +43,26 @@ final class ReviewService
         });
     }
 
-    private function lockPending(Submission $submission): Submission
+    /** @throws AlreadyReviewed */
+    public function approveRedemption(Redemption $redemption): void
     {
-        $locked = Submission::whereKey($submission->id)->lockForUpdate()->firstOrFail();
+        DB::transaction(fn () => $this->lockPending($redemption)->update(['status' => ReviewStatus::Approved, 'reviewed_at' => now()]));
+    }
+
+    /** Poin dikembalikan sebesar snapshot biaya, tepat sekali. @throws AlreadyReviewed */
+    public function rejectRedemption(Redemption $redemption, ?string $note = null): void
+    {
+        DB::transaction(function () use ($redemption, $note) {
+            $r = $this->lockPending($redemption);
+            $r->update(['status' => ReviewStatus::Rejected, 'reject_note' => $note, 'reviewed_at' => now()]);
+            $this->ledger->refund($r->child, $r->cost, $r);
+        });
+    }
+
+    /** @template T of Model @param T $model @return T */
+    private function lockPending(Model $model): Model
+    {
+        $locked = $model::whereKey($model->getKey())->lockForUpdate()->firstOrFail();
 
         return $locked->status === ReviewStatus::Pending ? $locked : throw new AlreadyReviewed;
     }

@@ -15,6 +15,19 @@
     </form>
 </div>
 
+@include('parent._status')
+
+@if ($selected)
+    <form method="POST" action="{{ route('parent.points.adjust', $selected) }}" class="mb-6 flex flex-wrap items-end gap-2 rounded-xl bg-white p-4 shadow">
+        @csrf
+        <label class="text-sm">Sesuaikan poin <input name="amount" type="number" placeholder="+10 / -5" class="w-24 rounded border p-1" required></label>
+        <label class="text-sm">Catatan <input name="note" maxlength="100" class="rounded border p-1" required></label>
+        <button class="rounded bg-indigo-600 px-3 py-1 text-sm text-white">Simpan</button>
+        @error('amount') <span class="text-sm text-red-600">{{ $message }}</span> @enderror
+        @error('note') <span class="text-sm text-red-600">{{ $message }}</span> @enderror
+    </form>
+@endif
+
 <h2 class="mb-2 font-bold">Keputusan tugas</h2>
 <ul class="mb-8 divide-y rounded-xl bg-white shadow">
     @forelse ($submissions as $s)

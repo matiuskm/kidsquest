@@ -9,6 +9,7 @@ Format mengikuti [Keep a Changelog](https://keepachangelog.com/), versi mengikut
 - Tugas (sekali/harian/mingguan/bulanan) dengan penjadwalan tanpa cron dan CRUD parent.
 - Misi anak, upload foto bukti (dikompres WebP max 1280px, disimpan privat), status todo/pending/rejected/done.
 - Review parent: antrean "Perlu diperiksa" di beranda, setuju/tolak foto bukti (idempotent), riwayat keputusan dan mutasi poin.
+- Hadiah (CRUD parent), klaim anak (poin dipotong saat klaim, dikembalikan bila ditolak), penyesuaian poin manual.
 
 ## [0.1.0] - 2026-11-25
 ### Added
