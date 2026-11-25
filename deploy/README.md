@@ -14,3 +14,6 @@ Perintah CLI PHP di server ini dikunci (`disable_functions`, `open_basedir`); un
 
 ## Rilis berikutnya
 `git pull`, `composer install --no-dev -o`, `npm ci && npm run build`, `php artisan migrate --force`. Versi: ubah `VERSION` + `CHANGELOG.md`, tag `vX.Y.Z`, `gh release create`.
+
+## Catatan izin
+Cache view yang dikompilasi (`storage/framework/views`) harus milik `www-data`, kalau tidak PHP-FPM gagal `touch()` (500). Test memakai folder terpisah (`VIEW_COMPILED_PATH=/tmp/kidsquest-test-views` di `phpunit.xml`). Bila 500 muncul setelah menjalankan `php artisan` sebagai `ubuntu`: `sudo rm -f storage/framework/views/*.php`. Setelah mengedit `.env` dengan `sed -i`: `sudo chown ubuntu:www-data .env && sudo chmod 640 .env`.
