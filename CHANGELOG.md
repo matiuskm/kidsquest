@@ -8,6 +8,7 @@ Format mengikuti [Keep a Changelog](https://keepachangelog.com/), versi mengikut
 - Ledger poin append-only (`PointsLedger`): earn, redeem, refund, adjust, birthday; saldo tidak bisa minus.
 - Tugas (sekali/harian/mingguan/bulanan) dengan penjadwalan tanpa cron dan CRUD parent.
 - Misi anak, upload foto bukti (dikompres WebP max 1280px, disimpan privat), status todo/pending/rejected/done.
+- Review parent: antrean "Perlu diperiksa" di beranda, setuju/tolak foto bukti (idempotent), riwayat keputusan dan mutasi poin.
 
 ## [0.1.0] - 2026-11-25
 ### Added

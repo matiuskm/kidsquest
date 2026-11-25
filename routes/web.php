@@ -16,6 +16,9 @@ Route::post('/keluar', [AuthController::class, 'destroy'])->name('logout');
 
 Route::middleware('role:parent')->prefix('orangtua')->group(function () {
     Route::get('/', Parents\DashboardController::class)->name('parent.dashboard');
+    Route::get('riwayat', Parents\HistoryController::class)->name('parent.history');
+    Route::post('periksa/submission/{submission}/setuju', [Parents\ReviewController::class, 'approveSubmission'])->name('parent.submissions.approve');
+    Route::post('periksa/submission/{submission}/tolak', [Parents\ReviewController::class, 'rejectSubmission'])->name('parent.submissions.reject');
     Route::resource('tugas', Parents\TaskController::class)->except('show')
         ->parameters(['tugas' => 'task'])->names('parent.tasks');
 });
