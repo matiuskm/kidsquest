@@ -9,6 +9,7 @@ Format mengikuti [Keep a Changelog](https://keepachangelog.com/), versi mengikut
 - Perbaikan hasil review: dobel-tap klaim hadiah, batas tebak PIN harian (20x/24 jam, dibuka saat orang tua reset PIN), unggahan >10 MB mendapat pesan ramah, cookie sesi `secure`, nginx HTTPS (http2).
 - Landing page di `/` (tanpa nama anak); pilih anak + PIN pindah ke `/masuk-anak`. Tampilan parent diperbarui: header gradasi, navigasi aktif, kartu ringkasan, progres per anak.
 - Nilai ulangan: anak kirim mata pelajaran, nilai, dan foto; parent memeriksa (boleh koreksi nilai). Poin A (90-100) 5, B (80-89) 4, C (70-79) 3, di bawah 70 tidak dapat poin; rentang di `config/kidsquest.php`.
+- Hasil review nilai ulangan: satu ulangan per mata pelajaran yang menunggu keputusan (mencegah kiriman berulang), pesan error koreksi nilai tampil di dashboard, riwayat memakai label "Nilai ulangan" dan tidak menulis "+0".
 
 ## [0.2.0] - 2026-11-25
 ### Added
