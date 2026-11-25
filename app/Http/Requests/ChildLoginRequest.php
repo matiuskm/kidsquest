@@ -14,6 +14,18 @@ class ChildLoginRequest extends FormRequest
 
     private const LOCK_SECONDS = 300;
 
+    /** Batas harian menahan tebak-tebakan PIN (10.000 kombinasi) dari internet. */
+    private const DAILY_MAX = 20;
+
+    private const DAILY_SECONDS = 86400;
+
+    /** Dibuka lagi saat orang tua mereset PIN. */
+    public static function clearLockout(int $childId): void
+    {
+        RateLimiter::clear("pin:{$childId}");
+        RateLimiter::clear("pin-day:{$childId}");
+    }
+
     public function rules(): array
     {
         return [
@@ -25,10 +37,15 @@ class ChildLoginRequest extends FormRequest
     /** @throws ValidationException */
     public function authenticate(): User
     {
-        $key = 'pin:'.$this->integer('child_id');
+        $id = $this->integer('child_id');
+        $key = "pin:{$id}";
+        $dayKey = "pin-day:{$id}";
 
-        if (RateLimiter::tooManyAttempts($key, self::MAX_ATTEMPTS)) {
-            $minutes = (int) ceil(RateLimiter::availableIn($key) / 60);
+        $locked = RateLimiter::tooManyAttempts($key, self::MAX_ATTEMPTS) ? $key
+            : (RateLimiter::tooManyAttempts($dayKey, self::DAILY_MAX) ? $dayKey : null);
+
+        if ($locked) {
+            $minutes = (int) ceil(RateLimiter::availableIn($locked) / 60);
 
             throw ValidationException::withMessages(['pin' => "Terlalu banyak percobaan. Coba lagi dalam {$minutes} menit."]);
         }
@@ -37,11 +54,12 @@ class ChildLoginRequest extends FormRequest
 
         if (! $child || ! Hash::check($this->string('pin'), $child->pin_hash)) {
             RateLimiter::hit($key, self::LOCK_SECONDS);
+            RateLimiter::hit($dayKey, self::DAILY_SECONDS);
 
             throw ValidationException::withMessages(['pin' => 'PIN salah, coba lagi ya.']);
         }
 
-        RateLimiter::clear($key);
+        self::clearLockout($id);
 
         return $child;
     }

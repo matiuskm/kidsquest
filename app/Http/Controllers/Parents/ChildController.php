@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Parents;
 
 use App\Enums\Role;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\ChildLoginRequest;
 use App\Http\Requests\ChildRequest;
 use App\Models\User;
 use App\Services\ChildService;
@@ -39,6 +40,7 @@ class ChildController extends Controller
         unset($data['pin']);
 
         $child->update($pin ? [...$data, 'pin_hash' => $pin] : $data);
+        $pin && ChildLoginRequest::clearLockout($child->id);
 
         return redirect()->route('parent.children.index')->with('status', 'Data anak disimpan.');
     }

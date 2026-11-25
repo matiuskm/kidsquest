@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Enums\ReviewStatus;
+use App\Exceptions\DuplicateClaim;
 use App\Exceptions\InsufficientPoints;
 use App\Exceptions\RewardUnavailable;
 use App\Models\Redemption;
@@ -12,12 +13,24 @@ use Illuminate\Support\Facades\DB;
 
 final class RewardService
 {
+    /** Hadiah boleh diklaim berulang, tapi bukan dua kali dalam sekejap (dobel-tap). */
+    private const DOUBLE_TAP_SECONDS = 10;
+
     public function __construct(private PointsLedger $ledger, private Notifier $notifier) {}
 
-    /** Poin dipotong saat klaim (dikembalikan bila ditolak). Rollback penuh bila saldo kurang. @throws InsufficientPoints|RewardUnavailable */
+    /** Poin dipotong saat klaim (dikembalikan bila ditolak). Rollback penuh bila saldo kurang. @throws InsufficientPoints|RewardUnavailable|DuplicateClaim */
     public function claim(User $child, Reward $reward): Redemption
     {
         return DB::transaction(function () use ($child, $reward) {
+            User::whereKey($child->id)->lockForUpdate()->first(); // serialisasi dobel-tap
+
+            $doubleTap = Redemption::where(['child_id' => $child->id, 'reward_id' => $reward->id, 'status' => ReviewStatus::Pending])
+                ->where('created_at', '>=', now()->subSeconds(self::DOUBLE_TAP_SECONDS))->exists();
+
+            if ($doubleTap) {
+                throw new DuplicateClaim;
+            }
+
             if (! Reward::whereKey($reward->id)->where('active', true)->exists()) {
                 throw new RewardUnavailable;
             }

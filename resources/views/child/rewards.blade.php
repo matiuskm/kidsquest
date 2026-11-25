@@ -20,9 +20,9 @@
                     <div class="text-2xl font-extrabold">{{ $reward->icon }} {{ $reward->name }}</div>
                     <div class="text-base">⭐ {{ $reward->cost }} poin</div>
                 </div>
-                <form method="POST" action="{{ route('child.claim', $reward) }}">
+                <form method="POST" action="{{ route('child.claim', $reward) }}" x-data="{ busy: false }" @submit="busy = true">
                     @csrf
-                    <button class="rounded-2xl bg-pink-400 px-5 py-3 text-white disabled:bg-slate-300" @disabled(! $affordable)>Tukar</button>
+                    <button class="rounded-2xl bg-pink-400 px-5 py-3 text-white disabled:bg-slate-300" x-bind:disabled="busy" @disabled(! $affordable)>Tukar</button>
                 </form>
             </article>
         @empty

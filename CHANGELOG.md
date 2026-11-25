@@ -6,6 +6,7 @@ Format mengikuti [Keep a Changelog](https://keepachangelog.com/), versi mengikut
 ### Added
 - PWA (manifest, service worker, ikon), notifikasi Web Push (parent: kiriman dan klaim; anak: keputusan), suara (poin masuk, klaim, ditolak, kirim), konfeti dan animasi kartu.
 - Pengaman test (menolak database selain `kidsquest_test`), konfigurasi nginx dan dokumen deploy.
+- Perbaikan hasil review: dobel-tap klaim hadiah, batas tebak PIN harian (20x/24 jam, dibuka saat orang tua reset PIN), unggahan >10 MB mendapat pesan ramah, cookie sesi `secure`, nginx HTTPS (http2).
 
 ## [0.2.0] - 2026-11-25
 ### Added
