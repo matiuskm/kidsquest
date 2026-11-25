@@ -92,6 +92,19 @@ class ChildManagementTest extends TestCase
         $this->assertTrue(Hash::check('9999', $child->fresh()->pin_hash));
     }
 
+    public function test_parent_pin_reset_clears_a_lockout(): void
+    {
+        $child = User::factory()->child('1111')->create();
+        foreach (range(1, 5) as $_) {
+            $this->post(route('child.pin'), ['child_id' => $child->id, 'pin' => '0000']);
+        }
+
+        $this->actingAs($this->parent)->put(route('parent.children.update', $child), ['name' => $child->name, 'avatar' => '🦊', 'pin' => '7777']);
+        $this->post(route('logout'));
+
+        $this->post(route('child.pin'), ['child_id' => $child->id, 'pin' => '7777'])->assertRedirect(route('child.missions'));
+    }
+
     public function test_child_edits_own_profile(): void
     {
         $child = User::factory()->child('1111', 5, 5)->create();

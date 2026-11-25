@@ -40,7 +40,8 @@
                 <img x-show="preview" :src="preview" class="mx-auto max-h-48 rounded-xl" alt="">
                 <input type="file" name="photo" accept="image/*" capture="environment" class="sr-only" required @change="shrink($event)">
             </label>
-            <button :disabled="busy" class="w-full rounded-2xl bg-pink-400 py-3 text-white disabled:opacity-50">Kirim 🚀</button>
+            <p x-show="error" x-text="error" x-cloak class="text-center text-base text-rose-700"></p>
+            <button :disabled="busy || working || error" class="w-full rounded-2xl bg-pink-400 py-3 text-white disabled:opacity-50">Kirim 🚀</button>
         </form>
     @endif
 </article>

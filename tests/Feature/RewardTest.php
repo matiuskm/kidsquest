@@ -81,10 +81,22 @@ class RewardTest extends TestCase
     {
         $this->fund(120);
         $this->claim();
+        $this->travel(11)->seconds();
         $this->claim()->assertSessionHasNoErrors();
 
         $this->assertSame(0, $this->balance());
         $this->assertSame(2, Redemption::count());
+    }
+
+    public function test_double_tap_on_claim_creates_a_single_claim(): void
+    {
+        $this->fund(200);
+
+        $this->claim()->assertSessionHasNoErrors();
+        $this->claim()->assertSessionHasErrors('reward');
+
+        $this->assertSame(1, Redemption::count());
+        $this->assertSame(140, $this->balance());
     }
 
     public function test_reject_refunds_exactly_once_using_the_snapshot_cost(): void

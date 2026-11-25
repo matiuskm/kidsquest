@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Child;
 
+use App\Exceptions\DuplicateClaim;
 use App\Exceptions\InsufficientPoints;
 use App\Exceptions\RewardUnavailable;
 use App\Http\Controllers\Controller;
@@ -23,7 +24,7 @@ class RewardController extends Controller
     {
         try {
             $rewards->claim(auth()->user(), $reward);
-        } catch (InsufficientPoints|RewardUnavailable $e) {
+        } catch (InsufficientPoints|RewardUnavailable|DuplicateClaim $e) {
             return back()->withErrors(['reward' => $e instanceof InsufficientPoints ? 'Poinmu belum cukup. Semangat! 💪' : $e->getMessage()])->with('sound', 'reject');
         }
 
