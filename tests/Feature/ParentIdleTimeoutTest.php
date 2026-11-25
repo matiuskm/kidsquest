@@ -37,4 +37,12 @@ class ParentIdleTimeoutTest extends TestCase
         $this->actingAs($child)->withSession(['parent_last_seen' => now()->subDays(5)->timestamp])
             ->get(route('child.missions'))->assertOk();
     }
+
+    public function test_chat_route_shared_with_children_does_not_log_children_out(): void
+    {
+        $child = User::factory()->child()->create();
+
+        $this->actingAs($child)->withSession(['parent_last_seen' => now()->subDays(5)->timestamp])
+            ->get(route('chat.index'))->assertOk();
+    }
 }

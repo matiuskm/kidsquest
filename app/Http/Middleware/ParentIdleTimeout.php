@@ -14,6 +14,11 @@ class ParentIdleTimeout
 
     public function handle(Request $request, Closure $next): Response
     {
+        // Rute chat dipakai bersama anak; sesi anak tidak boleh kena batas ini.
+        if (! $request->user()?->isParent()) {
+            return $next($request);
+        }
+
         $last = $request->session()->get('parent_last_seen');
 
         if ($last && now()->timestamp - $last > self::IDLE_SECONDS) {

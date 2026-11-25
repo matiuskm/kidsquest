@@ -12,15 +12,15 @@ final class Notifier
 {
     public function toParent(string $title, string $body, string $url): void
     {
-        User::where('role', Role::Parent)->get()->each(fn (User $parent) => $this->send($parent, $title, $body, $url));
+        User::where('role', Role::Parent)->get()->each(fn (User $parent) => $this->toUser($parent, $title, $body, $url));
     }
 
     public function toChild(User $child, string $title, string $body, string $url): void
     {
-        $this->send($child, $title, $body, $url);
+        $this->toUser($child, $title, $body, $url);
     }
 
-    private function send(User $user, string $title, string $body, string $url): void
+    public function toUser(User $user, string $title, string $body, string $url): void
     {
         try {
             if ($user->pushSubscriptions()->exists()) {

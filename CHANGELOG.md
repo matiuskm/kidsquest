@@ -4,12 +4,14 @@ Format mengikuti [Keep a Changelog](https://keepachangelog.com/), versi mengikut
 
 ## [Unreleased]
 ### Added
+- Chat 1-lawan-1 antar anak dan anak-parent (teks maks 500 karakter, notifikasi push, penanda belum dibaca, polling 5 detik). Parent hanya melihat chat miliknya sendiri; chat antar anak privat. Parent bisa mematikan chat antar anak per anak. Foto di chat belum ada.
 - Parent bisa membatalkan persetujuan tugas atau nilai ulangan dari Riwayat: poin ditarik lagi (ditolak bila poin sudah terpakai) dan item kembali ke antrean periksa.
 ### Changed
-- Menu bawah anak dirapikan: ikon di atas teks pendek (Misi, Nilai, Hadiah, Saya, Keluar), tab aktif ditandai.
+- Menu bawah anak dirapikan: ikon di atas teks pendek (Misi, Nilai, Hadiah, Chat, Saya, Keluar), tab aktif ditandai.
 ### Changed
 - Parent otomatis keluar bila diam 2 jam (sesi anak tetap 30 hari). Tugas yang sudah pernah dikerjakan tidak bisa diubah jadwal/tanggal mulainya. Kartu periksa ulangan menampilkan nilai terakhir yang disetujui untuk pelajaran yang sama.
 - Dua folder: produksi (`/var/www/kidsquest`, selalu `main`) dan kerja (`/var/www/kidsquest-dev`), skrip `deploy/deploy.sh`; backup harian database dan foto (`deploy/backup.sh`).
+- `deploy.sh` ikut membangun aset bila view Blade berubah (kelas Tailwind baru).
 - Hapus halaman welcome bawaan, `laravel/tinker` pindah ke dev, cache service worker v2, poin dibaca sekali per halaman anak, test tidak menulis ke log produksi.
 
 ## [1.1.0] - 2026-11-25

@@ -51,4 +51,11 @@ class ChildController extends Controller
 
         return redirect()->route('parent.children.index')->with('status', 'Anak dihapus.');
     }
+
+    public function toggleChat(User $child)
+    {
+        $child->update(['peer_chat' => ! $child->peer_chat]);
+
+        return back()->with('status', 'Chat antar anak '.($child->peer_chat ? 'diaktifkan' : 'dimatikan').' untuk '.$child->name.'.');
+    }
 }
