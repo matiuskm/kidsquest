@@ -26,6 +26,27 @@ class ExamGradeTest extends TestCase
         $this->assertSame($points, $grade->points);
     }
 
+    public static function letters(): array
+    {
+        return [['A', 5], ['B', 4], ['C', 3], ['D', 0], ['E', 0], ['b', 4]];
+    }
+
+    #[DataProvider('letters')]
+    public function test_letter_maps_to_points(string $letter, int $points): void
+    {
+        $grade = ExamGrade::forLetter($letter);
+
+        $this->assertSame(strtoupper($letter), $grade->letter);
+        $this->assertSame($points, $grade->points);
+    }
+
+    public function test_unknown_letter_is_rejected(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        ExamGrade::forLetter('F');
+    }
+
     #[DataProvider('outOfRange')]
     public function test_out_of_range_score_is_rejected(int $score): void
     {

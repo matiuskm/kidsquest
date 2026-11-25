@@ -45,13 +45,21 @@
         @endforeach
         @foreach ($exams as $e)
             <x-review-item
-                :title="'📝 '.$e->subject.' · nilai '.$e->claimed_score"
+                :title="'📝 '.$e->subject.' · nilai '.$e->mark()"
                 :subtitle="$e->child->name.' · '.$e->created_at->format('d/m/Y')"
                 :image="route('photos.exam', $e)"
                 :approve="route('parent.exams.approve', $e)"
                 :reject="route('parent.exams.reject', $e)">
                 <x-slot:fields>
-                    <input name="score" type="number" min="0" max="100" value="{{ $e->claimed_score }}" aria-label="Nilai" class="w-16 rounded-full border px-2 py-1 text-sm">
+                    @if ($e->isLetter())
+                        <select name="letter" aria-label="Nilai" class="rounded-full border px-2 py-1 text-sm">
+                            @foreach (\App\Support\ExamGrade::LETTERS as $l)
+                                <option value="{{ $l }}" @selected($e->claimed_letter === $l)>{{ $l }}</option>
+                            @endforeach
+                        </select>
+                    @else
+                        <input name="score" type="number" min="0" max="100" value="{{ $e->claimed_score }}" aria-label="Nilai" class="w-16 rounded-full border px-2 py-1 text-sm">
+                    @endif
                 </x-slot:fields>
             </x-review-item>
         @endforeach

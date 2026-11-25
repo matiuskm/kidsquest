@@ -9,6 +9,22 @@ final readonly class ExamGrade
 {
     private function __construct(public string $letter, public int $points) {}
 
+    public const LETTERS = ['A', 'B', 'C', 'D', 'E'];
+
+    /** Penilaian huruf: poin dari config; huruf yang tidak ada di config (E) tidak dapat poin. */
+    public static function forLetter(string $letter): self
+    {
+        $letter = strtoupper($letter);
+
+        if (! in_array($letter, self::LETTERS, true)) {
+            throw new InvalidArgumentException('Huruf harus A sampai E.');
+        }
+
+        $band = collect(config('kidsquest.exam_grades'))->first(fn ($b) => $b[1] === $letter);
+
+        return new self($letter, $band[2] ?? 0);
+    }
+
     public static function for(int $score): self
     {
         if ($score < 0 || $score > 100) {

@@ -53,6 +53,23 @@ class ExamSubmissionTest extends TestCase
         $this->assertSame(0, ExamResult::count());
     }
 
+    public function test_child_submits_a_letter_grade(): void
+    {
+        $this->send(['subject' => 'Bahasa Inggris', 'score' => null, 'letter' => 'b'])->assertRedirect(route('child.exams'));
+
+        $exam = ExamResult::firstOrFail();
+        $this->assertSame('B', $exam->claimed_letter);
+        $this->assertNull($exam->claimed_score);
+    }
+
+    public function test_letter_must_be_valid_and_exclusive_with_score(): void
+    {
+        $this->send(['score' => null, 'letter' => 'Z'])->assertSessionHasErrors('letter');
+        $this->send(['score' => 90, 'letter' => 'A'])->assertSessionHasErrors();
+        $this->send(['score' => null])->assertSessionHasErrors('score');
+        $this->assertSame(0, ExamResult::count());
+    }
+
     public function test_photo_and_subject_are_required(): void
     {
         $this->actingAs($this->child)->post(route('child.exams.store'), ['subject' => 'IPA', 'score' => 80])

@@ -3,6 +3,8 @@
 Format mengikuti [Keep a Changelog](https://keepachangelog.com/), versi mengikuti [SemVer](https://semver.org/).
 
 ## [Unreleased]
+### Added
+- Nilai ulangan bisa berupa huruf (A-E) untuk pelajaran yang dinilai dengan huruf, mis. bahasa Inggris. Poin: A 5, B 4, C 3, D dan E tidak dapat poin; parent bisa mengoreksi huruf.
 
 ## [1.0.0] - 2026-11-25
 Rilis pertama yang live di https://kidsquest.zarvenio.id.
