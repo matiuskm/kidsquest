@@ -239,5 +239,6 @@
     "Akun :name terkunci karena PIN salah berkali-kali.": ":name's account is locked after too many wrong PINs.",
     "Nilai yang sama sudah disetujui :date. Cek fotonya di Riwayat.": "The same score was approved on :date. Check its photo in History.",
     "Buka kunci": "Unlock",
-    "Foto": "Photo"
+    "Foto": "Photo",
+    "Tutup": "Close"
 }

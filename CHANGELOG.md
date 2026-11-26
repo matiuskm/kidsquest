@@ -3,6 +3,8 @@
 Format mengikuti [Keep a Changelog](https://keepachangelog.com/), versi mengikuti [SemVer](https://semver.org/).
 
 ## [Unreleased]
+### Changed
+- Foto bukti dibuka sebagai lightbox di halaman yang sama, bukan tab baru.
 
 ## [1.4.1] - 2026-11-26
 ### Added

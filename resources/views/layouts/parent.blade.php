@@ -35,5 +35,12 @@
         @yield('content')
     </main>
 
+    <dialog id="lightbox" class="m-auto max-w-[95vw] overflow-visible bg-transparent backdrop:bg-black/80">
+        <img alt="{{ __('Foto bukti') }}" class="max-h-[85vh] max-w-full rounded-xl">
+        <form method="dialog" class="mt-3 text-center">
+            <button class="rounded-full bg-white px-5 py-2 text-sm font-semibold">✕ {{ __('Tutup') }}</button>
+        </form>
+    </dialog>
+
     <footer class="py-4 text-center text-xs text-slate-400">KidsQuest v{{ config('app.version') }}</footer>
 @endsection
