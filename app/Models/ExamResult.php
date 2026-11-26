@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-#[Fillable(['child_id', 'subject', 'claimed_score', 'claimed_letter', 'final_score', 'final_letter', 'photo_path', 'status', 'reject_note', 'points_awarded', 'reviewed_at'])]
+#[Fillable(['child_id', 'subject', 'claimed_score', 'claimed_letter', 'final_score', 'final_letter', 'photo_path', 'photo_hash', 'status', 'reject_note', 'points_awarded', 'reviewed_at'])]
 class ExamResult extends Model
 {
     /** @use HasFactory<ExamResultFactory> */
@@ -30,6 +30,15 @@ class ExamResult extends Model
     public function lastApproved(): ?self
     {
         return static::where(['child_id' => $this->child_id, 'subject' => $this->subject, 'status' => ReviewStatus::Approved])
+            ->latest('reviewed_at')->first();
+    }
+
+    /** Pelajaran dan nilai yang sama disetujui dalam 30 hari terakhir: kemungkinan kertas yang sama difoto ulang. */
+    public function sameMarkApproved(): ?self
+    {
+        return static::where(['child_id' => $this->child_id, 'subject' => $this->subject, 'status' => ReviewStatus::Approved])
+            ->where($this->isLetter() ? 'final_letter' : 'final_score', $this->isLetter() ? $this->claimed_letter : $this->claimed_score)
+            ->where('reviewed_at', '>=', now()->subDays(30))
             ->latest('reviewed_at')->first();
     }
 

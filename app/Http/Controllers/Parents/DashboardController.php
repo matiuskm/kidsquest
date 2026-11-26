@@ -18,6 +18,7 @@ class DashboardController extends Controller
         $today = now()->toImmutable();
 
         return view('parent.dashboard', [
+            'locked' => User::children()->whereNotNull('pin_locked_at')->orderBy('name')->get(),
             'pending' => Submission::with(['task', 'child'])->where('status', ReviewStatus::Pending)->oldest()->get(),
             'exams' => ExamResult::with('child')->where('status', ReviewStatus::Pending)->oldest()->get(),
             'claims' => Redemption::with(['reward', 'child'])->where('status', ReviewStatus::Pending)->oldest()->get(),

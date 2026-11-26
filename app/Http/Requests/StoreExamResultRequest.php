@@ -10,6 +10,8 @@ class StoreExamResultRequest extends FormRequest
 {
     protected function prepareForValidation(): void
     {
+        // "IPA", " IPA. " dan "IPA" harus dianggap pelajaran yang sama.
+        is_string($this->subject) && $this->merge(['subject' => trim(preg_replace('/\s+/u', ' ', $this->subject), ' .,;:!?_-')]);
         $this->letter !== null && $this->merge(['letter' => strtoupper(trim((string) $this->letter))]);
     }
 

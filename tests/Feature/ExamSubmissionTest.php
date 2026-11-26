@@ -99,7 +99,7 @@ class ExamSubmissionTest extends TestCase
         $this->send();
         $this->travel(1)->minute();
         $this->send()->assertSessionHasErrors('photo');
-        $this->send(['subject' => 'IPA'])->assertSessionDoesntHaveErrors();
+        $this->send(['subject' => 'IPA', 'photo' => UploadedFile::fake()->image('ipa.jpg', 800, 600)])->assertSessionDoesntHaveErrors();
         $this->assertSame(2, ExamResult::count());
 
         ExamResult::where('subject', 'Matematika')->update(['status' => ReviewStatus::Rejected]);

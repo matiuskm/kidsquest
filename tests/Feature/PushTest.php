@@ -41,7 +41,7 @@ class PushTest extends TestCase
         $user->updatePushSubscription($endpoint, 'key', 'token', 'aes128gcm');
     }
 
-    private function payload(string $endpoint = 'https://push.example/new'): array
+    private function payload(string $endpoint = 'https://fcm.googleapis.com/new'): array
     {
         return ['endpoint' => $endpoint, 'keys' => ['p256dh' => 'pk', 'auth' => 'tk'], 'contentEncoding' => 'aes128gcm'];
     }
@@ -50,7 +50,7 @@ class PushTest extends TestCase
     {
         $this->actingAs($this->child)->postJson(route('push.subscribe'), $this->payload())->assertNoContent();
 
-        $this->assertSame($this->child->id, PushSubscription::where('endpoint', 'https://push.example/new')->sole()->subscribable_id);
+        $this->assertSame($this->child->id, PushSubscription::where('endpoint', 'https://fcm.googleapis.com/new')->sole()->subscribable_id);
     }
 
     public function test_subscribe_validates_input_and_requires_login(): void

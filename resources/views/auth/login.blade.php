@@ -15,6 +15,10 @@
         <label class="block text-sm" for="password">Password</label>
         <input id="password" name="password" type="password" class="w-full rounded border p-2" required>
     </div>
+    <label class="flex items-start gap-2 text-sm">
+        <input type="checkbox" name="own_device" value="1" class="mt-1">
+        <span>{{ __('Ini HP saya (keluar otomatis setelah 2 jam, bukan 10 menit)') }}</span>
+    </label>
     <button class="w-full rounded bg-indigo-600 p-2 text-white">{{ __('Masuk') }}</button>
     <p class="text-center text-sm"><a href="{{ route('home') }}" class="underline">{{ __('← Beranda') }}</a></p>
 </form>

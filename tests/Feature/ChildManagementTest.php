@@ -94,6 +94,7 @@ class ChildManagementTest extends TestCase
 
     public function test_parent_pin_reset_clears_a_lockout(): void
     {
+        $this->withCookie('kq_family', '1');
         $child = User::factory()->child('1111')->create();
         foreach (range(1, 5) as $_) {
             $this->post(route('child.pin'), ['child_id' => $child->id, 'pin' => '0000']);
@@ -129,9 +130,9 @@ class ChildManagementTest extends TestCase
 
         $this->put(route('child.profile.update'), [...$base, 'current_pin' => '1111', 'pin' => '12'])->assertSessionHasErrors('pin');
 
-        $this->put(route('child.profile.update'), [...$base, 'current_pin' => '1111', 'pin' => '2222'])->assertSessionHasNoErrors();
+        $this->put(route('child.profile.update'), [...$base, 'current_pin' => '1111', 'pin' => '2580'])->assertSessionHasNoErrors();
         $fresh = $child->fresh();
-        $this->assertTrue(Hash::check('2222', $fresh->pin_hash));
+        $this->assertTrue(Hash::check('2580', $fresh->pin_hash));
         $this->assertFalse(Hash::check('1111', $fresh->pin_hash));
     }
 
@@ -167,7 +168,7 @@ class ChildManagementTest extends TestCase
         $this->assertSame(3, PointTransaction::where('user_id', $child->id)->count());
         $this->assertSame(100, $ledger->balance($child));
         $this->post(route('logout'));
-        $this->get(route('child.pick'))->assertDontSee($child->name);
+        $this->withCookie('kq_family', '1')->get(route('child.pick'))->assertDontSee($child->name);
     }
 
     public function test_deleting_child_also_purges_exam_photos_and_rejects_pending_exams(): void

@@ -6,6 +6,10 @@
 <div x-data="{ child: @js(old('child_id') ? $children->firstWhere('id', (int) old('child_id'))?->only('id', 'name', 'avatar') : null) }">
     <h1 class="mb-6 text-center text-4xl font-extrabold">{{ __('Siapa yang main hari ini? 🌈') }}</h1>
 
+    @if ($errors->any() && ! $known)
+        <p class="mb-4 rounded-2xl bg-rose-200 p-4 text-center text-base">{{ $errors->first() }}</p>
+    @endif
+
     <div x-show="!child" class="grid grid-cols-2 gap-4">
         @forelse ($children as $c)
             <button type="button" @click="child = @js($c->only('id', 'name', 'avatar'))"
@@ -14,12 +18,13 @@
                 <div class="mt-2 text-2xl">{{ $c->name }}</div>
             </button>
         @empty
-            <p class="col-span-2 text-center">{{ __('Belum ada anak. Minta orang tua menambahkan dulu ya.') }}</p>
+            <p class="col-span-2 text-center">{{ $known ? __('Belum ada anak. Minta orang tua menambahkan dulu ya.') : __('HP ini belum dikenali. Minta orang tua masuk sekali di HP ini.') }}</p>
         @endforelse
     </div>
 
-    <form x-show="child" x-cloak method="POST" action="{{ route('child.pin') }}" class="rounded-3xl bg-white p-6 text-center shadow-lg">
+    <form x-show="child" x-cloak method="POST" action="{{ route('child.pin') }}" x-data="pinForm" @submit.prevent="submit($event)" class="rounded-3xl bg-white p-6 text-center shadow-lg">
         @csrf
+        <input type="hidden" name="push_endpoint">
         <input type="hidden" name="child_id" :value="child?.id">
         <div class="text-7xl" x-text="child?.avatar"></div>
         <div class="mt-2 text-3xl" x-text="child?.name"></div>

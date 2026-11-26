@@ -20,10 +20,18 @@ class MakeParent extends Command
             return self::FAILURE;
         }
 
+        $password = (string) $this->secret('Password');
+
+        if (mb_strlen($password) < 10) {
+            $this->error('Password minimal 10 karakter.');
+
+            return self::FAILURE;
+        }
+
         User::create([
             'name' => $this->argument('name'),
             'email' => $this->argument('email'),
-            'password' => $this->secret('Password'),
+            'password' => $password,
             'role' => Role::Parent,
             'avatar' => '🧑',
         ]);

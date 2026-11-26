@@ -7,29 +7,35 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
-/** Sesi parent mengikuti sesi anak (30 hari, agar anak tak sering input PIN), tapi parent otomatis keluar bila diam 2 jam. */
+/** Sesi parent mengikuti sesi anak (30 hari), tapi parent otomatis keluar bila diam: 2 jam di HP sendiri, 10 menit di HP lain. */
 class ParentIdleTimeout
 {
-    private const IDLE_SECONDS = 7200;
+    private const OWN_DEVICE_SECONDS = 7200;
+
+    private const OTHER_DEVICE_SECONDS = 600;
 
     public function handle(Request $request, Closure $next): Response
     {
-        // Rute chat dipakai bersama anak; sesi anak tidak boleh kena batas ini.
-        if (! $request->user()?->isParent()) {
+        // Tombol Keluar dibiarkan jalan agar langganan push perangkat ikut terhapus.
+        if (! $request->user()?->isParent() || $request->routeIs('logout')) {
             return $next($request);
         }
 
         $last = $request->session()->get('parent_last_seen');
+        $limit = $request->session()->get('parent_own_device') ? self::OWN_DEVICE_SECONDS : self::OTHER_DEVICE_SECONDS;
 
-        if ($last && now()->timestamp - $last > self::IDLE_SECONDS) {
+        if ($last && now()->timestamp - $last > $limit) {
             Auth::logout();
             $request->session()->invalidate();
             $request->session()->regenerateToken();
 
-            return redirect()->route('login');
+            return $request->expectsJson() ? response()->json([], 401) : redirect()->route('login');
         }
 
-        $request->session()->put('parent_last_seen', now()->timestamp);
+        // Polling chat berjalan sendiri, bukan tanda orang tua masih memegang HP.
+        if (! $request->routeIs('chat.poll')) {
+            $request->session()->put('parent_last_seen', now()->timestamp);
+        }
 
         return $next($request);
     }

@@ -17,6 +17,13 @@
 @include('parent._status')
 <x-push-toggle class="mb-4 text-sm text-slate-600" />
 
+@foreach ($locked as $child)
+    <div class="mb-3 flex flex-wrap items-center justify-between gap-2 rounded-2xl bg-rose-50 p-4 text-sm ring-1 ring-rose-200">
+        <span>🔒 {{ __('Akun :name terkunci karena PIN salah berkali-kali.', ['name' => $child->name]) }}</span>
+        <x-unlock-button :child="$child" />
+    </div>
+@endforeach
+
 <section class="mb-6 grid grid-cols-3 gap-3 text-center">
     <div @class(['rounded-2xl p-4 shadow-sm ring-1', 'bg-amber-50 ring-amber-200' => $queue > 0, 'bg-white ring-slate-200' => $queue === 0])>
         <div class="text-3xl font-extrabold">{{ $queue }}</div>
@@ -46,7 +53,7 @@
         @foreach ($exams as $e)
             <x-review-item
                 :title="'📝 '.$e->subject.' · '.__('nilai').' '.$e->mark()"
-                :subtitle="$e->child->name.' · '.$e->created_at->format('d/m/Y').(($last = $e->lastApproved()) ? ' · '.__('Terakhir disetujui:').' '.$last->mark().' ('.$last->reviewed_at->format('d/m').')' : '')"
+                :subtitle="$e->child->name.' · '.$e->created_at->format('d/m/Y').(($last = $e->lastApproved()) ? ' · '.__('Terakhir disetujui:').' '.$last->mark().' ('.$last->reviewed_at->format('d/m').')' : '').(($same = $e->sameMarkApproved()) ? ' · ⚠️ '.__('Nilai yang sama sudah disetujui :date. Cek fotonya di Riwayat.', ['date' => $same->reviewed_at->format('d/m')]) : '')"
                 :image="route('photos.exam', $e)"
                 :approve="route('parent.exams.approve', $e)"
                 :reject="route('parent.exams.reject', $e)">

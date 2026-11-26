@@ -18,6 +18,7 @@ class ProfileController extends Controller
         if (isset($data['pin'])) {
             $data['pin_hash'] = $data['pin'];
             unset($data['pin']);
+            $request->user()->forceFill(['must_change_pin' => false]);
         }
 
         $request->user()->update($data);

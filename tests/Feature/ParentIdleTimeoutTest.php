@@ -24,7 +24,7 @@ class ParentIdleTimeoutTest extends TestCase
     {
         $parent = User::factory()->parent()->create();
 
-        $this->actingAs($parent)->withSession(['parent_last_seen' => now()->subMinutes(30)->timestamp])
+        $this->actingAs($parent)->withSession(['parent_own_device' => true, 'parent_last_seen' => now()->subMinutes(30)->timestamp])
             ->get(route('parent.dashboard'))->assertOk();
 
         $this->assertGreaterThan(now()->subMinute()->timestamp, session('parent_last_seen'));

@@ -32,6 +32,14 @@ final class PhotoStore
         return $path;
     }
 
+    /** Sidik jari file tersimpan; null bila filenya sudah tidak ada. */
+    public function hash(string $path): ?string
+    {
+        $bytes = Storage::disk('local')->get($path);
+
+        return $bytes === null ? null : hash('sha256', $bytes);
+    }
+
     public function delete(string $path): void
     {
         Storage::disk('local')->delete($path);

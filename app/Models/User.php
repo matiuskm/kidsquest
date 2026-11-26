@@ -21,7 +21,7 @@ class User extends Authenticatable
     /** @use HasFactory<UserFactory> */
     use HasFactory, HasPushSubscriptions, Notifiable, SoftDeletes;
 
-    protected $attributes = ['peer_chat' => true, 'locale' => 'id'];
+    protected $attributes = ['peer_chat' => true, 'locale' => 'id', 'pin_failures' => 0, 'must_change_pin' => false];
 
     protected static function booted(): void
     {
@@ -42,6 +42,8 @@ class User extends Authenticatable
             'password' => 'hashed',
             'pin_hash' => 'hashed',
             'peer_chat' => 'boolean',
+            'pin_locked_at' => 'datetime',
+            'must_change_pin' => 'boolean',
         ];
     }
 
