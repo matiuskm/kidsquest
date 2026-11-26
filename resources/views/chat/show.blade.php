@@ -21,6 +21,7 @@
             async tick() {
                 if (document.hidden) return;
                 const r = await fetch(@js(route('chat.poll', $other)) + '?after=' + this.last, { headers: { Accept: 'application/json' } });
+                if (r.status === 401) return location.reload();
                 if (!r.ok) return;
                 const d = await r.json();
                 d.messages.forEach(m => { this.items.push(m); this.last = Math.max(this.last, m.id); });

@@ -18,6 +18,9 @@
                 <div class="text-sm text-slate-500">{{ __('Lahir') }} {{ $child->birthday_day }}/{{ $child->birthday_month }} · ⭐ {{ $child->points }}</div>
             </div>
             <div class="flex shrink-0 gap-3 text-sm">
+                @if ($child->pin_locked_at)
+                    <x-unlock-button :child="$child" />
+                @endif
                 <form method="POST" action="{{ route('parent.children.chat', $child) }}">
                     @csrf
                     <button class="text-slate-600" title="{{ __('Chat dengan anak lain') }}">💬 {{ $child->peer_chat ? __('Aktif') : __('Mati') }}</button>

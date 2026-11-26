@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Enums\Role;
+use App\Support\FamilyDevice;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
@@ -23,6 +24,8 @@ class AuthController extends Controller
         }
 
         $request->session()->regenerate();
+        $request->session()->put(['parent_own_device' => $request->boolean('own_device'), 'parent_last_seen' => now()->timestamp]);
+        FamilyDevice::remember();
 
         return redirect()->route('parent.dashboard');
     }

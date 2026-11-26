@@ -4,6 +4,17 @@ Format mengikuti [Keep a Changelog](https://keepachangelog.com/), versi mengikut
 
 ## [Unreleased]
 
+## [1.4.0] - 2026-11-26
+### Security
+- Daftar anak dan form PIN hanya muncul di perangkat yang pernah dipakai orang tua login (HP keluarga).
+- Akun anak terkunci setelah 5x PIN salah berturut-turut; orang tua dapat notifikasi, membuka dari Beranda/Anak, dan anak wajib ganti PIN (tidak boleh sama atau pola mudah).
+- Sesi orang tua habis setelah diam 10 menit, atau 2 jam bila "Ini HP saya" dicentang; polling chat tidak dihitung. Login PIN anak memutus notifikasi di perangkat itu.
+- Reset PIN atau buka kunci mengeluarkan sesi anak.
+- Foto ulangan identik ditolak, maksimal 5 nilai menunggu, peringatan nilai yang sama, tautan foto di Riwayat.
+- Alamat push dibatasi ke layanan resmi, upload dan klaim dibatasi frekuensinya, password orang tua minimal 10 karakter, Symfony diperbarui (composer audit bersih).
+### Fixed
+- Polling chat tidak lagi menghabiskan batas kirim pesan.
+
 ## [1.3.0] - 2026-11-26
 ### Added
 - Pilihan bahasa Indonesia/English per pengguna (tombol 🌐 di header parent dan halaman Saya anak). Tampilan, pesan error/validasi, dan notifikasi push mengikuti bahasa penerima. Teks Inggris di `lang/en.json`; string baru harus dibungkus `__()` dan ditambah ke sana.

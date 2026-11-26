@@ -10,6 +10,12 @@ class AuthTest extends TestCase
 {
     use RefreshDatabase;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->withCookie('kq_family', '1');
+    }
+
     private function wrongPins(User $child, int $times): void
     {
         for ($i = 0; $i < $times; $i++) {
@@ -53,43 +59,7 @@ class AuthTest extends TestCase
         $this->assertGuest();
     }
 
-    public function test_sixth_attempt_is_throttled_even_with_correct_pin(): void
-    {
-        $child = User::factory()->child('4321')->create();
-        $this->wrongPins($child, 5);
-
-        $this->post(route('child.pin'), ['child_id' => $child->id, 'pin' => '4321'])
-            ->assertSessionHasErrors('pin');
-        $this->assertGuest();
-    }
-
-    public function test_child_can_log_in_after_the_five_minute_lock_expires(): void
-    {
-        $child = User::factory()->child('4321')->create();
-        $this->wrongPins($child, 5);
-
-        $this->travel(6)->minutes();
-
-        $this->post(route('child.pin'), ['child_id' => $child->id, 'pin' => '4321'])->assertRedirect(route('child.missions'));
-    }
-
-    public function test_daily_cap_keeps_child_locked_across_five_minute_windows(): void
-    {
-        $child = User::factory()->child('4321')->create();
-
-        foreach (range(1, 4) as $_) {
-            $this->wrongPins($child, 5);
-            $this->travel(6)->minutes();
-        }
-
-        $this->post(route('child.pin'), ['child_id' => $child->id, 'pin' => '4321'])->assertSessionHasErrors('pin');
-        $this->assertGuest();
-
-        $this->travel(25)->hours();
-        $this->post(route('child.pin'), ['child_id' => $child->id, 'pin' => '4321'])->assertRedirect(route('child.missions'));
-    }
-
-    public function test_throttle_is_per_child(): void
+    public function test_lock_is_per_child(): void
     {
         $a = User::factory()->child('1111')->create();
         $b = User::factory()->child('2222')->create();

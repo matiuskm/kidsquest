@@ -4,10 +4,10 @@ namespace App\Http\Controllers\Parents;
 
 use App\Enums\Role;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\ChildLoginRequest;
 use App\Http\Requests\ChildRequest;
 use App\Models\User;
 use App\Services\ChildService;
+use App\Services\PinService;
 
 class ChildController extends Controller
 {
@@ -33,14 +33,14 @@ class ChildController extends Controller
         return view('parent.children.form', ['child' => $child]);
     }
 
-    public function update(ChildRequest $request, User $child)
+    public function update(ChildRequest $request, User $child, PinService $pins)
     {
         $data = $request->childData();
         $pin = $data['pin'] ?? null;
         unset($data['pin']);
 
         $child->update($pin ? [...$data, 'pin_hash' => $pin] : $data);
-        $pin && ChildLoginRequest::clearLockout($child->id);
+        $pin && $pins->afterReset($child);
 
         return redirect()->route('parent.children.index')->with('status', __('Data anak disimpan.'));
     }
@@ -50,6 +50,13 @@ class ChildController extends Controller
         $children->remove($child);
 
         return redirect()->route('parent.children.index')->with('status', __('Anak dihapus.'));
+    }
+
+    public function unlock(User $child, PinService $pins)
+    {
+        $pins->unlock($child);
+
+        return back()->with('status', __('Akun :name dibuka. :name wajib ganti PIN setelah masuk.', ['name' => $child->name]));
     }
 
     public function toggleChat(User $child)

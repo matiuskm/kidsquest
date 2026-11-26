@@ -32,7 +32,7 @@
 <ul class="mb-8 divide-y rounded-xl bg-white shadow">
     @forelse ($submissions as $s)
         <li class="flex items-center justify-between gap-2 p-3 text-sm">
-            <span>{{ $s->child->name }} · {{ $s->task->title }}</span>
+            <span>{{ $s->child->name }} · {{ $s->task->title }} <x-photo-link :model="$s" route="photos.show" /></span>
             <span class="{{ $s->status === \App\Enums\ReviewStatus::Approved ? 'text-green-700' : 'text-red-700' }}">
                 {{ $s->status === \App\Enums\ReviewStatus::Approved ? __('Disetujui') : __('Ditolak') }} · {{ $s->reviewed_at?->format('d/m H:i') }}
             </span>
@@ -49,7 +49,7 @@
 <ul class="mb-8 divide-y rounded-xl bg-white shadow">
     @forelse ($exams as $e)
         <li class="flex items-center justify-between gap-2 p-3 text-sm">
-            <span>{{ $e->child->name }} · {{ $e->subject }}@if ($e->status === \App\Enums\ReviewStatus::Approved) · {{ $e->mark() }} ({{ $e->grade()->letter }}{{ $e->points_awarded ? ', +'.$e->points_awarded : '' }})@endif</span>
+            <span>{{ $e->child->name }} · {{ $e->subject }}@if ($e->status === \App\Enums\ReviewStatus::Approved) · {{ $e->mark() }} ({{ $e->grade()->letter }}{{ $e->points_awarded ? ', +'.$e->points_awarded : '' }})@endif <x-photo-link :model="$e" route="photos.exam" /></span>
             <span class="{{ $e->status === \App\Enums\ReviewStatus::Approved ? 'text-green-700' : 'text-red-700' }}">
                 {{ $e->status === \App\Enums\ReviewStatus::Approved ? __('Disetujui') : __('Ditolak') }} · {{ $e->reviewed_at?->format('d/m H:i') }}
             </span>
