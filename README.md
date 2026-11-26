@@ -11,13 +11,23 @@ Live: https://kidsquest.zarvenio.id · Bahasa tampilan: Indonesia dan English (d
 | Untuk | Fitur |
 |---|---|
 | Anak | Misi harian dengan foto bukti, nilai ulangan (angka atau huruf A-E), saldo dan mutasi poin, tukar poin dengan hadiah, chat 1-lawan-1, notifikasi push |
-| Orang tua | Antrean "Perlu diperiksa" (setujui, tolak dengan catatan, koreksi nilai), batalkan persetujuan dari Riwayat, kelola anak, tugas, dan hadiah, poin gratis, chat |
+| Orang tua | Antrean "Perlu diperiksa" (setujui, tolak dengan catatan, koreksi nilai), batalkan persetujuan dari Riwayat, kelola anak, tugas, dan hadiah, poin gratis, buka kunci akun anak, chat |
 | Otomatis | Bonus ulang tahun (50 poin, sekali setahun), jadwal tugas harian / mingguan (pilih hari) / sekali |
 
 Aturan poin:
 - Poin disimpan sebagai buku besar yang hanya bertambah (`earn`, `redeem`, `refund`, `adjust`, `birthday`, `exam`). Saldo = jumlah baris, tidak pernah disunting.
 - Nilai ulangan: A (90-100) = 5, B (80-89) = 4, C (70-79) = 3, di bawah itu 0. Rentang ada di `config/kidsquest.php`.
 - Membatalkan persetujuan menarik poinnya lagi dan ditolak bila poin sudah terpakai.
+
+## Keamanan
+
+- **HP keluarga:** daftar anak dan form PIN hanya muncul di perangkat yang pernah dipakai orang tua login.
+- **Kunci otomatis:** 5x PIN salah berturut-turut mengunci akun. Orang tua dapat notifikasi, membuka dari Beranda atau halaman Anak, lalu anak wajib ganti PIN (tidak boleh sama dengan yang lama atau pola seperti 1111 dan 1234).
+- **Sesi orang tua:** keluar otomatis setelah diam 10 menit, atau 2 jam bila "Ini HP saya" dicentang saat login. Polling chat tidak dihitung aktivitas.
+- **Nilai ulangan dobel:** foto yang persis sama ditolak, maksimal 5 menunggu per anak, kartu periksa memberi peringatan bila pelajaran dan nilai yang sama sudah disetujui dalam 30 hari.
+- **Lainnya:** reset PIN mengeluarkan sesi anak, foto disimpan privat, alamat push dibatasi ke layanan resmi, upload dibatasi frekuensinya.
+
+Batasan: foto ulang dari kertas yang sama tidak terdeteksi otomatis, belum ada header CSP, dan perangkat keluarga tidak bisa dicabut satu per satu.
 
 ## Teknologi
 
@@ -27,12 +37,12 @@ Laravel 13 (PHP 8.3), MySQL (SQLite untuk dev), Blade + Alpine.js + Tailwind 4 +
 
 ```bash
 composer setup          # install, .env, key, migrate, build aset
-php artisan kidsquest:make-parent email@contoh.id "Nama Orang Tua"
+php artisan kidsquest:make-parent email@contoh.id "Nama Orang Tua"   # password minimal 10 karakter
 php artisan serve       # terminal 1
 npm run dev             # terminal 2 (vite)
 ```
 
-Anak dibuat oleh orang tua lewat menu **Anak** (login anak: pilih nama lalu PIN di `/masuk-anak`; orang tua di `/masuk`).
+Anak dibuat oleh orang tua lewat menu **Anak**. Orang tua login di `/masuk`. Sebelum anak bisa masuk di suatu perangkat, orang tua harus login sekali di perangkat itu lalu Keluar; sesudahnya anak memilih nama dan memasukkan PIN di `/masuk-anak`.
 
 Notifikasi push butuh kunci VAPID: `php artisan webpush:vapid`, lalu isi `VAPID_*` di `.env`.
 
@@ -41,10 +51,8 @@ Notifikasi push butuh kunci VAPID: `php artisan webpush:vapid`, lalu isi `VAPID_
 | `.env` | Fungsi | Default |
 |---|---|---|
 | `BIRTHDAY_BONUS_POINTS` | Poin bonus ulang tahun | `50` |
-| `SESSION_LIFETIME` | Sesi dalam menit (anak 30 hari) | `43200` |
+| `SESSION_LIFETIME` | Sesi dalam menit (`43200` = 30 hari) | `43200` |
 | `VAPID_PUBLIC_KEY` / `VAPID_PRIVATE_KEY` | Kunci push | kosong |
-
-Orang tua otomatis keluar setelah 2 jam tidak aktif.
 
 ## Test
 
