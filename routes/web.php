@@ -10,7 +10,7 @@ use App\Http\Controllers\Parents;
 use App\Http\Controllers\PhotoController;
 use App\Http\Controllers\PushSubscriptionController;
 use App\Http\Middleware\AwardBirthdayBonus;
-use App\Http\Middleware\ParentIdleTimeout;
+use App\Http\Middleware\ForcePinChange;
 use App\Models\User;
 use Illuminate\Support\Facades\Route;
 
@@ -24,7 +24,7 @@ Route::get('/masuk', [AuthController::class, 'create'])->name('login');
 Route::post('/masuk', [AuthController::class, 'store'])->middleware('throttle:10,1')->name('login.store');
 Route::post('/keluar', [AuthController::class, 'destroy'])->name('logout');
 
-Route::middleware(['role:parent', ParentIdleTimeout::class])->prefix('orangtua')->group(function () {
+Route::middleware('role:parent')->prefix('orangtua')->group(function () {
     Route::get('/', Parents\DashboardController::class)->name('parent.dashboard');
     Route::get('riwayat', Parents\HistoryController::class)->name('parent.history');
     Route::post('periksa/submission/{submission}/setuju', [Parents\ReviewController::class, 'approveSubmission'])->name('parent.submissions.approve');
@@ -36,6 +36,7 @@ Route::middleware(['role:parent', ParentIdleTimeout::class])->prefix('orangtua')
     Route::post('periksa/klaim/{redemption}/setuju', [Parents\ReviewController::class, 'approveRedemption'])->name('parent.redemptions.approve');
     Route::post('periksa/klaim/{redemption}/tolak', [Parents\ReviewController::class, 'rejectRedemption'])->name('parent.redemptions.reject');
     Route::post('anak/{child}/chat', [Parents\ChildController::class, 'toggleChat'])->name('parent.children.chat');
+    Route::post('anak/{child}/buka', [Parents\ChildController::class, 'unlock'])->name('parent.children.unlock');
     Route::post('poin/{child}/sesuaikan', [Parents\PointsController::class, 'adjust'])->name('parent.points.adjust');
     Route::resource('anak', Parents\ChildController::class)->except('show')
         ->parameters(['anak' => 'child'])->names('parent.children');
@@ -45,22 +46,22 @@ Route::middleware(['role:parent', ParentIdleTimeout::class])->prefix('orangtua')
         ->parameters(['tugas' => 'task'])->names('parent.tasks');
 });
 
-Route::middleware(['role:child', AwardBirthdayBonus::class])->group(function () {
+Route::middleware(['role:child', ForcePinChange::class, AwardBirthdayBonus::class])->group(function () {
     Route::get('/misi', [Child\MissionController::class, 'index'])->name('child.missions');
     Route::get('/saya', [Child\ProfileController::class, 'edit'])->name('child.profile');
     Route::put('/saya', [Child\ProfileController::class, 'update'])->name('child.profile.update');
     Route::get('/hadiah', [Child\RewardController::class, 'index'])->name('child.rewards');
-    Route::post('/hadiah/{reward}', [Child\RewardController::class, 'claim'])->name('child.claim');
+    Route::post('/hadiah/{reward}', [Child\RewardController::class, 'claim'])->middleware('throttle:10,1,claim')->name('child.claim');
     Route::get('/nilai', [Child\ExamController::class, 'index'])->name('child.exams');
-    Route::post('/nilai', [Child\ExamController::class, 'store'])->name('child.exams.store');
-    Route::post('/misi/{task}', [Child\MissionController::class, 'store'])->name('child.submit');
+    Route::post('/nilai', [Child\ExamController::class, 'store'])->middleware('throttle:10,1,upload')->name('child.exams.store');
+    Route::post('/misi/{task}', [Child\MissionController::class, 'store'])->middleware('throttle:10,1,upload')->name('child.submit');
 });
 
-Route::middleware(['auth', ParentIdleTimeout::class])->prefix('chat')->group(function () {
+Route::middleware(['auth', ForcePinChange::class])->prefix('chat')->group(function () {
     Route::get('/', [ChatController::class, 'index'])->name('chat.index');
     Route::get('{user}', [ChatController::class, 'show'])->name('chat.show');
-    Route::get('{user}/baru', [ChatController::class, 'poll'])->middleware('throttle:60,1')->name('chat.poll');
-    Route::post('{user}', [ChatController::class, 'store'])->middleware('throttle:20,1')->name('chat.store');
+    Route::get('{user}/baru', [ChatController::class, 'poll'])->middleware('throttle:60,1,chat-poll')->name('chat.poll');
+    Route::post('{user}', [ChatController::class, 'store'])->middleware('throttle:20,1,chat-send')->name('chat.store');
 });
 
 Route::middleware('auth')->group(function () {

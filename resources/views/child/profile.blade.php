@@ -8,6 +8,9 @@
     @if (session('status'))
         <div class="mb-4 rounded-2xl bg-emerald-200 p-4">{{ session('status') }}</div>
     @endif
+    @if ($child->must_change_pin)
+        <div class="mb-4 rounded-2xl bg-amber-200 p-4">{{ __('Akunmu baru dibuka. Ganti PIN dulu ya.') }}</div>
+    @endif
     @if ($errors->any())
         <div class="mb-4 rounded-2xl bg-rose-200 p-4">{{ $errors->first() }}</div>
     @endif

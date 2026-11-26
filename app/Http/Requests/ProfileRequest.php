@@ -13,7 +13,13 @@ class ProfileRequest extends FormRequest
         return [
             'name' => ['required', 'string', 'max:30'],
             'avatar' => ['required', Rule::in(config('kidsquest.avatars'))],
-            'pin' => ['nullable', 'digits:4'],
+            'pin' => [Rule::requiredIf($this->user()->must_change_pin), 'nullable', 'digits:4', function ($attr, $value, $fail) {
+                if (Hash::check((string) $value, $this->user()->pin_hash)) {
+                    $fail(__('PIN baru harus beda dari yang lama.'));
+                } elseif (preg_match('/^(\d)\1{3}$/', $value) || str_contains('0123456789', $value) || str_contains('9876543210', $value)) {
+                    $fail(__('PIN terlalu gampang ditebak.'));
+                }
+            }],
             'current_pin' => [
                 'required_with:pin', 'nullable',
                 fn ($attr, $value, $fail) => Hash::check((string) $value, $this->user()->pin_hash) || $fail(__('PIN lama salah.')),
