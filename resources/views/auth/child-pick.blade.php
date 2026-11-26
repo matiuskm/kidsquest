@@ -22,7 +22,7 @@
         @endforelse
     </div>
 
-    <form x-show="child" x-cloak method="POST" action="{{ route('child.pin') }}" x-data="pinForm" @submit.prevent="submit($event)" class="rounded-3xl bg-white p-6 text-center shadow-lg">
+    <form x-show="child" x-cloak method="POST" action="{{ route('child.pin') }}" x-data="logoutForm" @submit.prevent="submit($event)" class="rounded-3xl bg-white p-6 text-center shadow-lg">
         @csrf
         <input type="hidden" name="push_endpoint">
         <input type="hidden" name="child_id" :value="child?.id">

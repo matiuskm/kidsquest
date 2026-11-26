@@ -227,6 +227,20 @@ class SecurityHardeningTest extends TestCase
         $this->get(route('parent.history'))->assertSee(route('photos.exam', $old));
     }
 
+    public function test_subject_capitals_do_not_bypass_the_pending_check(): void
+    {
+        $this->exam($this->photo());
+        $this->exam($this->photo(120), 'ipa')->assertSessionHasErrors('photo');
+    }
+
+    public function test_warning_also_matches_the_score_claimed_before_a_correction(): void
+    {
+        ExamResult::factory()->create(['child_id' => $this->child->id, 'subject' => 'IPA', 'claimed_score' => 95, 'final_score' => 85, 'status' => ReviewStatus::Approved, 'reviewed_at' => now()->subDay()]);
+        $again = ExamResult::factory()->create(['child_id' => $this->child->id, 'subject' => 'IPA', 'claimed_score' => 95]);
+
+        $this->assertNotNull($again->sameMarkApproved());
+    }
+
     // Lain-lain
 
     public function test_push_endpoint_must_be_a_known_push_service(): void

@@ -36,8 +36,12 @@ class ExamResult extends Model
     /** Pelajaran dan nilai yang sama disetujui dalam 30 hari terakhir: kemungkinan kertas yang sama difoto ulang. */
     public function sameMarkApproved(): ?self
     {
+        [$claimed, $final, $mark] = $this->isLetter()
+            ? ['claimed_letter', 'final_letter', $this->claimed_letter]
+            : ['claimed_score', 'final_score', $this->claimed_score];
+
         return static::where(['child_id' => $this->child_id, 'subject' => $this->subject, 'status' => ReviewStatus::Approved])
-            ->where($this->isLetter() ? 'final_letter' : 'final_score', $this->isLetter() ? $this->claimed_letter : $this->claimed_score)
+            ->where(fn ($q) => $q->where($claimed, $mark)->orWhere($final, $mark))
             ->where('reviewed_at', '>=', now()->subDays(30))
             ->latest('reviewed_at')->first();
     }

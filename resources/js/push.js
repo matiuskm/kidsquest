@@ -53,15 +53,16 @@ export const pushToggle = () => ({
     },
 });
 
-// Form keluar / login anak: kirim endpoint device ini supaya server membersihkan langganannya.
-const endpointForm = (unsubscribe) => () => ({
+// Form keluar dan login PIN anak: putuskan langganan browser dan kirim endpoint-nya supaya server ikut menghapus.
+// Perangkat berganti pemakai, jadi pemakai baru mengaktifkan notifikasinya sendiri.
+export const logoutForm = () => ({
     async submit(event) {
         const form = event.target;
         try {
             const sub = await currentSubscription();
             if (sub) {
                 form.querySelector('[name=push_endpoint]').value = sub.endpoint;
-                if (unsubscribe) await sub.unsubscribe();
+                await sub.unsubscribe();
             }
         } catch {
             // tanpa langganan / service worker; lanjutkan
@@ -69,6 +70,3 @@ const endpointForm = (unsubscribe) => () => ({
         form.submit();
     },
 });
-
-export const logoutForm = endpointForm(true);
-export const pinForm = endpointForm(false);
