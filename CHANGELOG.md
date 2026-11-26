@@ -4,6 +4,10 @@ Format mengikuti [Keep a Changelog](https://keepachangelog.com/), versi mengikut
 
 ## [Unreleased]
 
+## [1.4.1] - 2026-11-26
+### Added
+- README untuk GitHub.
+
 ## [1.4.0] - 2026-11-26
 ### Security
 - Daftar anak dan form PIN hanya muncul di perangkat yang pernah dipakai orang tua login (HP keluarga).
