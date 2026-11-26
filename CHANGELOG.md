@@ -4,6 +4,10 @@ Format mengikuti [Keep a Changelog](https://keepachangelog.com/), versi mengikut
 
 ## [Unreleased]
 
+## [1.5.0] - 2026-11-26
+### Changed
+- Foto bukti dibuka sebagai lightbox di halaman yang sama, bukan tab baru.
+
 ## [1.4.1] - 2026-11-26
 ### Added
 - README untuk GitHub.

@@ -1,5 +1,6 @@
 import Alpine from 'alpinejs';
 import effects from './effects';
+import './lightbox';
 import photoUpload from './photo-upload';
 import { logoutForm, pushToggle } from './push';
 

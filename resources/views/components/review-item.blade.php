@@ -2,7 +2,7 @@
 
 <li class="kq-pop flex flex-col gap-4 rounded-2xl bg-white p-4 shadow-sm ring-1 ring-slate-200 sm:flex-row" x-data="{ rejecting: false }">
     @if ($image)
-        <a href="{{ $image }}" target="_blank" class="shrink-0"><img src="{{ $image }}" class="h-40 w-full rounded-xl object-cover sm:h-32 sm:w-32" alt="{{ __('Foto bukti') }}" loading="lazy"></a>
+        <a href="{{ $image }}" data-lightbox class="shrink-0"><img src="{{ $image }}" class="h-40 w-full rounded-xl object-cover sm:h-32 sm:w-32" alt="{{ __('Foto bukti') }}" loading="lazy"></a>
     @endif
     <div class="flex-1">
         <div class="font-semibold">{{ $title }}</div>
